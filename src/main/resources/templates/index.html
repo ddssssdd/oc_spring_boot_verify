@@ -28,10 +28,18 @@
             border-bottom: 1px solid #0f3460;
             letter-spacing: 0.5px;
         }
-        .sidebar-list {
-            flex: 1;
-            overflow-y: auto;
+        .sidebar-section {
+            padding: 8px 0;
+            border-bottom: 1px solid #0f3460;
         }
+        .sidebar-section-title {
+            padding: 4px 16px 8px;
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .sidebar-list { flex: 1; overflow-y: auto; }
         .sidebar-item {
             padding: 10px 16px;
             cursor: pointer;
@@ -53,6 +61,8 @@
             overflow: hidden;
             background: #f5f6fa;
         }
+
+        /* Toolbar */
         .toolbar {
             padding: 12px 20px;
             background: #fff;
@@ -82,11 +92,7 @@
             border-radius: 6px;
             overflow: hidden;
         }
-        thead {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+        thead { position: sticky; top: 0; z-index: 10; }
         th {
             background: #1a1a2e;
             color: #eee;
@@ -105,7 +111,6 @@
         th.dragging { opacity: 0.5; }
         th.drag-over { border-left: 3px solid #00d9ff; }
         .sort-icon { margin-left: 4px; font-size: 11px; opacity: 0.7; }
-
         td {
             padding: 8px 12px;
             border-bottom: 1px solid #eee;
@@ -130,89 +135,243 @@
         }
         .empty-icon { font-size: 48px; opacity: 0.3; }
 
-        /* Loading */
-        .loading-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0.8);
+        /* Table wrapper */
+        .table-wrapper { position: relative; }
+
+        /* =====================
+           BOOK PAGE STYLES
+           ===================== */
+        .book-page { display: flex; flex-direction: column; height: 100%; }
+
+        /* Search bar */
+        .search-bar {
+            background: #fff;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .search-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 180px;
+        }
+        .search-field label {
+            font-size: 11px;
+            color: #888;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .search-field input {
+            padding: 7px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .search-field input:focus { border-color: #00d9ff; }
+        .btn {
+            padding: 7px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        .btn-primary { background: #1a1a2e; color: #fff; }
+        .btn-primary:hover { background: #2a2a4e; }
+        .btn-ghost { background: #f0f0f0; color: #555; }
+        .btn-ghost:hover { background: #e0e0e0; }
+
+        /* Pagination */
+        .pagination {
+            background: #fff;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #555;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+            color: #666;
         }
-
-        .table-wrapper { position: relative; }
+        .pagination-info { color: #888; }
+        .pagination-controls { display: flex; gap: 8px; align-items: center; }
+        .pagination-controls button {
+            padding: 5px 12px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .pagination-controls button:hover:not(:disabled) { background: #f5f5f5; }
+        .pagination-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-num { padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; }
+        .page-num.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
     </style>
 </head>
 <body>
 <div id="app">
+
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-header">📋 表导航</div>
-        <div class="sidebar-list">
-            <div v-for="tbl in tables" :key="tbl"
-                 class="sidebar-item"
-                 :class="{ active: selectedTable === tbl }"
-                 @click="selectTable(tbl)">
-                {{ tbl }}
+        <div class="sidebar-header">📋 数据管理</div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 业务模块</div>
+            <div class="sidebar-item"
+                 :class="{ active: currentPage === 'book' }"
+                 @click="switchPage('book')">
+                📖 书籍管理
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🗄️ 数据表</div>
+            <div class="sidebar-list">
+                <div v-for="tbl in tables" :key="tbl"
+                     class="sidebar-item"
+                     :class="{ active: currentPage === 'table' && selectedTable === tbl }"
+                     @click="selectTable(tbl)">
+                    {{ tbl }}
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Main -->
     <div class="main">
-        <div class="toolbar">
-            <span class="table-name" v-if="selectedTable">{{ selectedTable }}</span>
-            <span class="info" v-if="!selectedTable">请从左侧选择表</span>
-            <span class="info" v-if="selectedTable && !loading">
-                共 {{ total }} 条 | 显示前 {{ displayRows.length }} 条 | {{ columns.length }} 列
-            </span>
-            <span class="spinner" v-if="loading">加载中...</span>
+
+        <!-- =================== BOOK PAGE =================== -->
+        <div v-if="currentPage === 'book'" class="book-page">
+            <div class="toolbar">
+                <span class="table-name">📖 书籍管理</span>
+                <span class="spinner" v-if="loading">加载中...</span>
+            </div>
+
+            <!-- Search bar -->
+            <div class="search-bar">
+                <div class="search-field">
+                    <label>ISBN</label>
+                    <input v-model="bookSearch.isbn" placeholder="模糊匹配ISBN" @keyup.enter="searchBooks" />
+                </div>
+                <div class="search-field">
+                    <label>书名</label>
+                    <input v-model="bookSearch.name" placeholder="模糊匹配书名" @keyup.enter="searchBooks" />
+                </div>
+                <div class="search-field">
+                    <label>描述</label>
+                    <input v-model="bookSearch.description" placeholder="模糊匹配描述" @keyup.enter="searchBooks" />
+                </div>
+                <button class="btn btn-primary" @click="searchBooks">🔍 查询</button>
+                <button class="btn btn-ghost" @click="clearBookSearch">✕ 清除</button>
+            </div>
+
+            <!-- Pagination info -->
+            <div class="pagination" v-if="!loading">
+                <span class="pagination-info">共 {{ bookTotal }} 条 | 第 {{ bookPage + 1 }} / {{ bookTotalPages }} 页 | 每页 {{ bookSize }} 条</span>
+                <div class="pagination-controls">
+                    <button @click="goBookPage(0)" :disabled="bookPage === 0">首页</button>
+                    <button @click="goBookPage(bookPage - 1)" :disabled="bookPage === 0">上一页</button>
+                    <button v-for="p in bookPageNumbers" :key="p"
+                            class="page-num"
+                            :class="{ active: p === bookPage }"
+                            @click="goBookPage(p)">{{ p + 1 }}</button>
+                    <button @click="goBookPage(bookPage + 1)" :disabled="bookPage >= bookTotalPages - 1">下一页</button>
+                    <button @click="goBookPage(bookTotalPages - 1)" :disabled="bookPage >= bookTotalPages - 1">末页</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container">
+                <div v-if="loading" class="empty">
+                    <div class="empty-icon">⏳</div>
+                    <div>加载中...</div>
+                </div>
+                <div v-else-if="bookRows.length === 0" class="empty">
+                    <div class="empty-icon">📭</div>
+                    <div>没有找到书籍</div>
+                </div>
+                <div v-else class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th v-for="col in bookColumns" :key="col"
+                                    :class="{ sorted: bookSortCol === col }"
+                                    @click="bookSort(col)">
+                                    {{ col }}
+                                    <span class="sort-icon" v-if="bookSortCol === col">
+                                        {{ bookSortDir === 'asc' ? '↑' : '↓' }}
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(row, ri) in bookRows" :key="ri">
+                                <td v-for="col in bookColumns" :key="col" :title="row[col]">
+                                    {{ row[col] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="table-container">
-            <div v-if="!selectedTable" class="empty">
-                <div class="empty-icon">📂</div>
-                <div>选择一个表开始浏览数据</div>
+        <!-- =================== TABLE VIEWER PAGE =================== -->
+        <div v-if="currentPage === 'table'">
+            <div class="toolbar">
+                <span class="table-name" v-if="selectedTable">{{ selectedTable }}</span>
+                <span class="info" v-if="!selectedTable">请从左侧选择表</span>
+                <span class="info" v-if="selectedTable && !loading">
+                    共 {{ total }} 条 | 显示前 {{ displayRows.length }} 条 | {{ columns.length }} 列
+                </span>
+                <span class="spinner" v-if="loading">加载中...</span>
             </div>
 
-            <div v-else-if="loading" class="empty">
-                <div class="empty-icon">⏳</div>
-                <div>加载中...</div>
-            </div>
-
-            <div v-else-if="error" class="empty">
-                <div class="empty-icon">❌</div>
-                <div>{{ error }}</div>
-            </div>
-
-            <div v-else class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th v-for="(col, idx) in columns" :key="col"
-                                :class="{ sorted: sortColumn === col, dragging: dragIdx === idx, 'drag-over': dragOverIdx === idx }"
-                                draggable="true"
-                                @dragstart="onDragStart(idx, $event)"
-                                @dragover.prevent="onDragOver(idx)"
-                                @dragend="onDragEnd"
-                                @click="sort(col)">
-                                {{ col }}
-                                <span class="sort-icon" v-if="sortColumn === col">
-                                    {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                                </span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(row, ri) in displayRows" :key="ri">
-                            <td v-for="col in columns" :key="col" :title="row[col]">
-                                {{ row[col] }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="table-container">
+                <div v-if="!selectedTable" class="empty">
+                    <div class="empty-icon">📂</div>
+                    <div>选择一个表开始浏览数据</div>
+                </div>
+                <div v-else-if="loading" class="empty">
+                    <div class="empty-icon">⏳</div>
+                    <div>加载中...</div>
+                </div>
+                <div v-else-if="error" class="empty">
+                    <div class="empty-icon">❌</div>
+                    <div>{{ error }}</div>
+                </div>
+                <div v-else class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th v-for="(col, idx) in columns" :key="col"
+                                    :class="{ sorted: sortColumn === col, dragging: dragIdx === idx, 'drag-over': dragOverIdx === idx }"
+                                    draggable="true"
+                                    @dragstart="onDragStart(idx, $event)"
+                                    @dragover.prevent="onDragOver(idx)"
+                                    @dragend="onDragEnd"
+                                    @click="sort(col)">
+                                    {{ col }}
+                                    <span class="sort-icon" v-if="sortColumn === col">
+                                        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(row, ri) in displayRows" :key="ri">
+                                <td v-for="col in columns" :key="col" :title="row[col]">
+                                    {{ row[col] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -224,7 +383,11 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
+            // Page state: 'book' or 'table'
+            currentPage: 'book',
             tables: [],
+
+            // ---- Table viewer ----
             selectedTable: null,
             columns: [],
             displayRows: [],
@@ -234,13 +397,49 @@ createApp({
             sortColumn: null,
             sortDirection: 'asc',
             dragIdx: null,
-            dragOverIdx: null
+            dragOverIdx: null,
+
+            // ---- Book page ----
+            bookColumns: ['isbn', 'name', 'author', 'description', 'publishedDate', 'price', 'inventoryQty'],
+            bookRows: [],
+            bookTotal: 0,
+            bookPage: 0,
+            bookSize: 10,
+            bookSortCol: 'isbn',
+            bookSortDir: 'asc',
+            bookSearch: {
+                isbn: '',
+                name: '',
+                description: ''
+            }
         };
+    },
+    computed: {
+        bookTotalPages() {
+            return Math.ceil(this.bookTotal / this.bookSize) || 1;
+        },
+        bookPageNumbers() {
+            const total = this.bookTotalPages;
+            const cur = this.bookPage;
+            const pages = [];
+            const delta = 2;
+            for (let i = Math.max(0, cur - delta); i <= Math.min(total - 1, cur + delta); i++) {
+                pages.push(i);
+            }
+            return pages;
+        }
     },
     async mounted() {
         await this.fetchTables();
+        await this.searchBooks();
     },
     methods: {
+        // ---- Page navigation ----
+        switchPage(page) {
+            this.currentPage = page;
+        },
+
+        // ---- Table viewer ----
         async fetchTables() {
             try {
                 const res = await fetch('/api/tables');
@@ -250,6 +449,7 @@ createApp({
             }
         },
         async selectTable(name) {
+            this.currentPage = 'table';
             this.selectedTable = name;
             this.sortColumn = null;
             this.sortDirection = 'asc';
@@ -261,9 +461,7 @@ createApp({
             this.error = null;
             try {
                 const params = new URLSearchParams({
-                    page: 0,
-                    size: 50,
-                    maxColumns: 10,
+                    page: 0, size: 50, maxColumns: 10,
                     direction: this.sortDirection
                 });
                 if (this.sortColumn) params.set('sort', this.sortColumn);
@@ -308,6 +506,49 @@ createApp({
             }
             this.dragIdx = null;
             this.dragOverIdx = null;
+        },
+
+        // ---- Book page ----
+        async searchBooks() {
+            this.loading = true;
+            try {
+                const params = new URLSearchParams({
+                    isbn: this.bookSearch.isbn,
+                    name: this.bookSearch.name,
+                    description: this.bookSearch.description,
+                    page: this.bookPage,
+                    size: this.bookSize,
+                    sort: this.bookSortCol,
+                    direction: this.bookSortDir
+                });
+                const res = await fetch(`/api/books/search?${params}`);
+                const data = await res.json();
+                this.bookRows = data.content;
+                this.bookTotal = data.totalElements;
+            } catch (e) {
+                this.bookRows = [];
+                this.bookTotal = 0;
+            } finally {
+                this.loading = false;
+            }
+        },
+        clearBookSearch() {
+            this.bookSearch = { isbn: '', name: '', description: '' };
+            this.bookPage = 0;
+            this.searchBooks();
+        },
+        async bookSort(col) {
+            if (this.bookSortCol === col) {
+                this.bookSortDir = this.bookSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.bookSortCol = col;
+                this.bookSortDir = 'asc';
+            }
+            await this.searchBooks();
+        },
+        async goBookPage(p) {
+            this.bookPage = p;
+            await this.searchBooks();
         }
     }
 }).mount('#app');

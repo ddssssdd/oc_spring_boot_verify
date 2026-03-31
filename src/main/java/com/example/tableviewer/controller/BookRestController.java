@@ -49,6 +49,24 @@ public class BookRestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // GET /api/books/search?isbn=&name=&description=&page=0&size=10
+    @GetMapping("/search")
+    public ResponseEntity<Page<BookResponseDTO>> search(
+            @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "isbn") String sort,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Sort.Direction dir = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        return ResponseEntity.ok(bookService.search(
+                isbn, name, description,
+                PageRequest.of(page, size, Sort.by(dir, sort))
+        ));
+    }
+
     // POST /api/books
     @PostMapping
     public ResponseEntity<BookResponseDTO> create(@RequestBody BookRequestDTO dto) {

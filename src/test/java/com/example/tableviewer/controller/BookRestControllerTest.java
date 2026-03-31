@@ -196,4 +196,40 @@ class BookRestControllerTest {
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/books/not-exist"))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNotFound());
     }
+
+    @Test
+    void search_withNoParams_shouldReturnAllBooks() throws Exception {
+        Page<BookResponseDTO> page = new PageImpl<>(
+                List.of(bookResponseDTO),
+                PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "isbn")),
+                1
+        );
+        when(bookService.search(any(), any(), any(), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/books/search")
+                        .param("isbn", "")
+                        .param("name", "")
+                        .param("description", ""))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.totalElements").value(1));
+
+        verify(bookService).search(any(), any(), any(), any(Pageable.class));
+    }
+
+    @Test
+    void search_withNameParam_shouldReturnFilteredBooks() throws Exception {
+        Page<BookResponseDTO> page = new PageImpl<>(
+                List.of(bookResponseDTO),
+                PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "isbn")),
+                1
+        );
+        when(bookService.search(any(), eq("Java"), any(), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/books/search")
+                        .param("name", "Java"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.content[0].name").value("Java编程思想"));
+
+        verify(bookService).search(any(), eq("Java"), any(), any(Pageable.class));
+    }
 }

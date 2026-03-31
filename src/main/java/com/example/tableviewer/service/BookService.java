@@ -37,6 +37,11 @@ public class BookService {
         return bookRepository.findByName(name).map(BookMapper::toDTO);
     }
 
+    @Transactional(readOnly = true)
+    public Page<BookResponseDTO> search(String isbn, String name, String description, Pageable pageable) {
+        return bookRepository.searchBooks(isbn, name, description, pageable).map(BookMapper::toDTO);
+    }
+
     public BookResponseDTO create(BookRequestDTO dto) {
         Book book = BookMapper.toModel(dto);
         return BookMapper.toDTO(bookRepository.save(book));
