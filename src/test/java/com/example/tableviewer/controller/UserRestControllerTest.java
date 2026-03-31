@@ -1,7 +1,7 @@
 package com.example.tableviewer.controller;
 
-import com.example.tableviewer.dto.UserRequest;
-import com.example.tableviewer.dto.UserResponse;
+import com.example.tableviewer.dto.UserRequestDTO;
+import com.example.tableviewer.dto.UserResponseDTO;
 import com.example.tableviewer.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -37,7 +37,7 @@ class UserRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private UserResponse userResponse;
+    private UserResponseDTO userResponseDTO;
 
     @BeforeEach
     void setUp() {
@@ -45,19 +45,19 @@ class UserRestControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        userResponse = new UserResponse();
-        userResponse.setId(1L);
-        userResponse.setName("张三");
-        userResponse.setEmail("zhangsan@example.com");
-        userResponse.setAddress("北京");
-        userResponse.setBirthday(LocalDate.of(1990, 5, 15));
-        userResponse.setJoinDate(LocalDateTime.of(2026, 3, 31, 10, 0, 0));
+        userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setId(1L);
+        userResponseDTO.setName("张三");
+        userResponseDTO.setEmail("zhangsan@example.com");
+        userResponseDTO.setAddress("北京");
+        userResponseDTO.setBirthday(LocalDate.of(1990, 5, 15));
+        userResponseDTO.setJoinDate(LocalDateTime.of(2026, 3, 31, 10, 0, 0));
     }
 
     @Test
     void findAll_shouldReturnPagedUsers() throws Exception {
-        Page<UserResponse> page = new PageImpl<>(
-                List.of(userResponse),
+        Page<UserResponseDTO> page = new PageImpl<>(
+                List.of(userResponseDTO),
                 PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id")),
                 1
         );
@@ -78,7 +78,7 @@ class UserRestControllerTest {
 
     @Test
     void findById_whenExists_shouldReturnUser() throws Exception {
-        when(userService.findById(1L)).thenReturn(Optional.of(userResponse));
+        when(userService.findById(1L)).thenReturn(Optional.of(userResponseDTO));
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/users/1"))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
@@ -100,21 +100,21 @@ class UserRestControllerTest {
 
     @Test
     void create_shouldReturn201() throws Exception {
-        UserRequest request = new UserRequest();
+        UserRequestDTO request = new UserRequestDTO();
         request.setName("李四");
         request.setEmail("lisi@example.com");
         request.setAddress("上海");
         request.setPassword("pass456");
         request.setBirthday(LocalDate.of(1985, 8, 22));
 
-        UserResponse created = new UserResponse();
+        UserResponseDTO created = new UserResponseDTO();
         created.setId(2L);
         created.setName("李四");
         created.setEmail("lisi@example.com");
         created.setAddress("上海");
         created.setBirthday(LocalDate.of(1985, 8, 22));
 
-        when(userService.create(any(UserRequest.class))).thenReturn(created);
+        when(userService.create(any(UserRequestDTO.class))).thenReturn(created);
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -123,32 +123,32 @@ class UserRestControllerTest {
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.id").value(2))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.name").value("李四"));
 
-        verify(userService).create(any(UserRequest.class));
+        verify(userService).create(any(UserRequestDTO.class));
     }
 
     @Test
     void update_whenExists_shouldReturn200() throws Exception {
-        UserRequest request = new UserRequest();
+        UserRequestDTO request = new UserRequestDTO();
         request.setName("张三改");
         request.setEmail("new@example.com");
 
-        when(userService.update(eq(1L), any(UserRequest.class)))
-                .thenReturn(Optional.of(userResponse));
+        when(userService.update(eq(1L), any(UserRequestDTO.class)))
+                .thenReturn(Optional.of(userResponseDTO));
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/api/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
 
-        verify(userService).update(eq(1L), any(UserRequest.class));
+        verify(userService).update(eq(1L), any(UserRequestDTO.class));
     }
 
     @Test
     void update_whenNotExists_shouldReturn404() throws Exception {
-        UserRequest request = new UserRequest();
+        UserRequestDTO request = new UserRequestDTO();
         request.setName("测试");
 
-        when(userService.update(eq(99L), any(UserRequest.class))).thenReturn(Optional.empty());
+        when(userService.update(eq(99L), any(UserRequestDTO.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/api/users/99")
                         .contentType(MediaType.APPLICATION_JSON)

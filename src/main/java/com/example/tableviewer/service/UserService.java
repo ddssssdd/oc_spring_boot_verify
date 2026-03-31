@@ -1,7 +1,8 @@
 package com.example.tableviewer.service;
 
-import com.example.tableviewer.dto.UserRequest;
-import com.example.tableviewer.dto.UserResponse;
+import com.example.tableviewer.dto.UserRequestDTO;
+import com.example.tableviewer.dto.UserResponseDTO;
+import com.example.tableviewer.mapper.UserMapper;
 import com.example.tableviewer.model.User;
 import com.example.tableviewer.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -22,34 +23,30 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserResponse> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(UserResponse::from);
+    public Page<UserResponseDTO> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserResponse> findById(Long id) {
-        return userRepository.findById(id).map(UserResponse::from);
+    public Optional<UserResponseDTO> findById(Long id) {
+        return userRepository.findById(id).map(UserMapper::toDTO);
     }
 
-    public UserResponse create(UserRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setAddress(request.getAddress());
-        user.setPassword(request.getPassword());
-        user.setBirthday(request.getBirthday());
-        return UserResponse.from(userRepository.save(user));
+    public UserResponseDTO create(UserRequestDTO dto) {
+        User user = UserMapper.toModel(dto);
+        return UserMapper.toDTO(userRepository.save(user));
     }
 
-    public Optional<UserResponse> update(Long id, UserRequest request) {
-        return userRepository.findById(id).map(user -> {
-            user.setName(request.getName());
-            user.setEmail(request.getEmail());
-            user.setAddress(request.getAddress());
-            user.setPassword(request.getPassword());
-            user.setBirthday(request.getBirthday());
-            return UserResponse.from(userRepository.save(user));
-        });
+    public Optional<UserResponseDTO> update(Long id, UserRequestDTO dto) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setName(dto.getName());
+                    user.setEmail(dto.getEmail());
+                    user.setAddress(dto.getAddress());
+                    user.setPassword(dto.getPassword());
+                    user.setBirthday(dto.getBirthday());
+                    return UserMapper.toDTO(userRepository.save(user));
+                });
     }
 
     public boolean delete(Long id) {
