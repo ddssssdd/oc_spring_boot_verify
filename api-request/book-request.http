@@ -1,0 +1,47 @@
+### 基础路径
+@baseUrl = http://localhost:8080/api/books
+
+### ============================================
+### 查询所有书籍（分页）
+GET {{baseUrl}}?page=0&size=10&sort=isbn&direction=asc
+
+### ============================================
+### 按 ISBN 查询单本书
+GET {{baseUrl}}/978-7-111-12345-6
+
+### ============================================
+### 按书名查询书籍
+GET {{baseUrl}}/search/by-name?name=Java编程思想
+
+### ============================================
+### 新增书籍
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "isbn": "978-7-111-12345-6",
+  "name": "Java编程思想",
+  "author": "Bruce Eckel",
+  "description": "Java经典书籍",
+  "publishedDate": "2007-03-01",
+  "price": 108.00,
+  "inventoryQty": 50
+}
+
+### ============================================
+### 更新书籍
+PUT {{baseUrl}}/978-7-111-12345-6
+Content-Type: application/json
+
+{
+  "name": "Java编程思想（第4版）",
+  "author": "Bruce Eckel",
+  "description": "Java经典书籍（更新版）",
+  "publishedDate": "2007-03-01",
+  "price": 128.00,
+  "inventoryQty": 30
+}
+
+### ============================================
+### 删除书籍
+DELETE {{baseUrl}}/978-7-111-12345-6
