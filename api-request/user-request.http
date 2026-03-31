@@ -1,0 +1,40 @@
+### 基础路径
+@baseUrl = http://localhost:8080/api/users
+
+### ============================================
+### 查询所有用户（分页）
+GET {{baseUrl}}?page=0&size=10&sort=id&direction=asc
+
+### ============================================
+### 按 ID 查询单个用户
+GET {{baseUrl}}/1
+
+### ============================================
+### 新增用户
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "name": "新增用户",
+  "email": "newuser@example.com",
+  "address": "北京市海淀区中关村",
+  "password": "password123",
+  "birthday": "1993-04-20"
+}
+
+### ============================================
+### 更新用户
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "name": "更新后的张三",
+  "email": "zhangsan_new@example.com",
+  "address": "北京市朝阳区新地址",
+  "password": "newpass123",
+  "birthday": "1991-05-15"
+}
+
+### ============================================
+### 删除用户
+DELETE {{baseUrl}}/6

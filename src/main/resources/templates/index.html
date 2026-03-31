@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Viewer</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; height: 100vh; overflow: hidden; }
+        #app { display: flex; height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            min-width: 220px;
+            background: #1a1a2e;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .sidebar-header {
+            padding: 16px;
+            background: #16213e;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 1px solid #0f3460;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .sidebar-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 1px solid #1a1a2e;
+            transition: background 0.15s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-item:hover { background: #0f3460; }
+        .sidebar-item.active { background: #0f3460; color: #00d9ff; border-left: 3px solid #00d9ff; }
+
+        /* Main */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #f5f6fa;
+        }
+        .toolbar {
+            padding: 12px 20px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+        }
+        .toolbar .table-name { font-weight: 600; color: #333; font-size: 15px; }
+        .toolbar .info { color: #888; }
+        .toolbar .spinner { color: #00d9ff; }
+
+        /* Table container */
+        .table-container {
+            flex: 1;
+            overflow: auto;
+            padding: 16px 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            font-size: 13px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        th {
+            background: #1a1a2e;
+            color: #eee;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            border-right: 1px solid #2a2a4e;
+            white-space: nowrap;
+            min-width: 100px;
+            transition: background 0.15s;
+        }
+        th:hover { background: #2a2a4e; }
+        th.sorted { color: #00d9ff; }
+        th.dragging { opacity: 0.5; }
+        th.drag-over { border-left: 3px solid #00d9ff; }
+        .sort-icon { margin-left: 4px; font-size: 11px; opacity: 0.7; }
+
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        tr:nth-child(even) td { background: #f9f9fb; }
+        tr:hover td { background: #eef4ff; }
+
+        /* Empty state */
+        .empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+            font-size: 15px;
+            gap: 12px;
+        }
+        .empty-icon { font-size: 48px; opacity: 0.3; }
+
+        /* Loading */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .table-wrapper { position: relative; }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">📋 表导航</div>
+        <div class="sidebar-list">
+            <div v-for="tbl in tables" :key="tbl"
+                 class="sidebar-item"
+                 :class="{ active: selectedTable === tbl }"
+                 @click="selectTable(tbl)">
+                {{ tbl }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+        <div class="toolbar">
+            <span class="table-name" v-if="selectedTable">{{ selectedTable }}</span>
+            <span class="info" v-if="!selectedTable">请从左侧选择表</span>
+            <span class="info" v-if="selectedTable && !loading">
+                共 {{ total }} 条 | 显示前 {{ displayRows.length }} 条 | {{ columns.length }} 列
+            </span>
+            <span class="spinner" v-if="loading">加载中...</span>
+        </div>
+
+        <div class="table-container">
+            <div v-if="!selectedTable" class="empty">
+                <div class="empty-icon">📂</div>
+                <div>选择一个表开始浏览数据</div>
+            </div>
+
+            <div v-else-if="loading" class="empty">
+                <div class="empty-icon">⏳</div>
+                <div>加载中...</div>
+            </div>
+
+            <div v-else-if="error" class="empty">
+                <div class="empty-icon">❌</div>
+                <div>{{ error }}</div>
+            </div>
+
+            <div v-else class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th v-for="(col, idx) in columns" :key="col"
+                                :class="{ sorted: sortColumn === col, dragging: dragIdx === idx, 'drag-over': dragOverIdx === idx }"
+                                draggable="true"
+                                @dragstart="onDragStart(idx, $event)"
+                                @dragover.prevent="onDragOver(idx)"
+                                @dragend="onDragEnd"
+                                @click="sort(col)">
+                                {{ col }}
+                                <span class="sort-icon" v-if="sortColumn === col">
+                                    {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(row, ri) in displayRows" :key="ri">
+                            <td v-for="col in columns" :key="col" :title="row[col]">
+                                {{ row[col] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data() {
+        return {
+            tables: [],
+            selectedTable: null,
+            columns: [],
+            displayRows: [],
+            total: 0,
+            loading: false,
+            error: null,
+            sortColumn: null,
+            sortDirection: 'asc',
+            dragIdx: null,
+            dragOverIdx: null
+        };
+    },
+    async mounted() {
+        await this.fetchTables();
+    },
+    methods: {
+        async fetchTables() {
+            try {
+                const res = await fetch('/api/tables');
+                this.tables = await res.json();
+            } catch (e) {
+                this.error = '无法加载表列表: ' + e.message;
+            }
+        },
+        async selectTable(name) {
+            this.selectedTable = name;
+            this.sortColumn = null;
+            this.sortDirection = 'asc';
+            await this.loadData();
+        },
+        async loadData() {
+            if (!this.selectedTable) return;
+            this.loading = true;
+            this.error = null;
+            try {
+                const params = new URLSearchParams({
+                    page: 0,
+                    size: 50,
+                    maxColumns: 10,
+                    direction: this.sortDirection
+                });
+                if (this.sortColumn) params.set('sort', this.sortColumn);
+                const res = await fetch(`/api/tables/${this.selectedTable}/data?${params}`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                this.columns = data.columns;
+                this.displayRows = data.rows;
+                this.total = data.total;
+            } catch (e) {
+                this.error = '加载数据失败: ' + e.message;
+                this.columns = [];
+                this.displayRows = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+        async sort(col) {
+            if (this.sortColumn === col) {
+                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortColumn = col;
+                this.sortDirection = 'asc';
+            }
+            await this.loadData();
+        },
+        onDragStart(idx, e) {
+            this.dragIdx = idx;
+            e.dataTransfer.effectAllowed = 'move';
+        },
+        onDragOver(idx) {
+            if (this.dragIdx !== null && this.dragIdx !== idx) {
+                this.dragOverIdx = idx;
+            }
+        },
+        onDragEnd() {
+            if (this.dragIdx !== null && this.dragOverIdx !== null && this.dragIdx !== this.dragOverIdx) {
+                const cols = [...this.columns];
+                const [moved] = cols.splice(this.dragIdx, 1);
+                cols.splice(this.dragOverIdx, 0, moved);
+                this.columns = cols;
+            }
+            this.dragIdx = null;
+            this.dragOverIdx = null;
+        }
+    }
+}).mount('#app');
+</script>
+</body>
+</html>
