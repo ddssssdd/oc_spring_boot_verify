@@ -30,6 +30,15 @@ public class Book {
     @Column(name = "inventory_qty")
     private Integer inventoryQty;
 
+    @Column(length = 200)
+    private String publisher;
+
+    @Column(name = "cover_image_url", length = 500)
+    private String coverImageUrl;
+
+    @Column(length = 2000)
+    private String comments;
+
     public Book() {}
 
     public String getIsbn() { return isbn; }
@@ -52,4 +61,13 @@ public class Book {
 
     public Integer getInventoryQty() { return inventoryQty; }
     public void setInventoryQty(Integer inventoryQty) { this.inventoryQty = inventoryQty; }
+
+    public String getPublisher() { return publisher; }
+    public void setPublisher(String publisher) { this.publisher = publisher; }
+
+    public String getCoverImageUrl() { return coverImageUrl; }
+    public void setCoverImageUrl(String coverImageUrl) { this.coverImageUrl = coverImageUrl; }
+
+    public String getComments() { return comments; }
+    public void setComments(String comments) { this.comments = comments; }
 }

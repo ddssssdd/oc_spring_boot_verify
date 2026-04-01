@@ -18,6 +18,9 @@ public class BookMapper {
         dto.setPublishedDate(book.getPublishedDate());
         dto.setPrice(book.getPrice());
         dto.setInventoryQty(book.getInventoryQty());
+        dto.setPublisher(book.getPublisher());
+        dto.setCoverImageUrl(book.getCoverImageUrl());
+        dto.setComments(book.getComments());
         return dto;
     }
 
@@ -31,6 +34,9 @@ public class BookMapper {
         book.setPublishedDate(dto.getPublishedDate());
         book.setPrice(dto.getPrice());
         book.setInventoryQty(dto.getInventoryQty());
+        book.setPublisher(dto.getPublisher());
+        book.setCoverImageUrl(dto.getCoverImageUrl());
+        book.setComments(dto.getComments());
         return book;
     }
 }

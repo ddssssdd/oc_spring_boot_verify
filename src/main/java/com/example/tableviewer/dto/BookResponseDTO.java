@@ -13,6 +13,9 @@ public class BookResponseDTO {
     private LocalDate publishedDate;
     private BigDecimal price;
     private Integer inventoryQty;
+    private String publisher;
+    private String coverImageUrl;
+    private String comments;
 
     public static BookResponseDTO from(Book book) {
         if (book == null) return null;
@@ -24,6 +27,9 @@ public class BookResponseDTO {
         dto.setPublishedDate(book.getPublishedDate());
         dto.setPrice(book.getPrice());
         dto.setInventoryQty(book.getInventoryQty());
+        dto.setPublisher(book.getPublisher());
+        dto.setCoverImageUrl(book.getCoverImageUrl());
+        dto.setComments(book.getComments());
         return dto;
     }
 
@@ -47,4 +53,13 @@ public class BookResponseDTO {
 
     public Integer getInventoryQty() { return inventoryQty; }
     public void setInventoryQty(Integer inventoryQty) { this.inventoryQty = inventoryQty; }
+
+    public String getPublisher() { return publisher; }
+    public void setPublisher(String publisher) { this.publisher = publisher; }
+
+    public String getCoverImageUrl() { return coverImageUrl; }
+    public void setCoverImageUrl(String coverImageUrl) { this.coverImageUrl = coverImageUrl; }
+
+    public String getComments() { return comments; }
+    public void setComments(String comments) { this.comments = comments; }
 }

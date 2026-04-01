@@ -12,6 +12,9 @@ public class BookRequestDTO {
     private LocalDate publishedDate;
     private BigDecimal price;
     private Integer inventoryQty;
+    private String publisher;
+    private String coverImageUrl;
+    private String comments;
 
     public String getIsbn() { return isbn; }
     public void setIsbn(String isbn) { this.isbn = isbn; }
@@ -33,4 +36,13 @@ public class BookRequestDTO {
 
     public Integer getInventoryQty() { return inventoryQty; }
     public void setInventoryQty(Integer inventoryQty) { this.inventoryQty = inventoryQty; }
+
+    public String getPublisher() { return publisher; }
+    public void setPublisher(String publisher) { this.publisher = publisher; }
+
+    public String getCoverImageUrl() { return coverImageUrl; }
+    public void setCoverImageUrl(String coverImageUrl) { this.coverImageUrl = coverImageUrl; }
+
+    public String getComments() { return comments; }
+    public void setComments(String comments) { this.comments = comments; }
 }
