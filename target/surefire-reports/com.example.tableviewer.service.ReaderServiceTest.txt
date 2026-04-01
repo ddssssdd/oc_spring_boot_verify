@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.tableviewer.service.ReaderServiceTest
 -------------------------------------------------------------------------------
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.611 s -- in com.example.tableviewer.service.ReaderServiceTest
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.653 s -- in com.example.tableviewer.service.ReaderServiceTest
