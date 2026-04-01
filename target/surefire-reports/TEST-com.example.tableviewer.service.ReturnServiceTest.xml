@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.controller.ReaderRestControllerTest" time="1.214" tests="8" errors="0" skipped="0" failures="0" flakes="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.service.ReturnServiceTest" time="0.047" tests="7" errors="0" skipped="0" failures="0" flakes="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -8,10 +8,8 @@
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="https://ubuntu.com/"/>
     <property name="user.timezone" value="Asia/Shanghai"/>
-    <property name="org.jboss.logging.provider" value="slf4j"/>
     <property name="os.name" value="Linux"/>
     <property name="java.vm.specification.version" value="25"/>
-    <property name="APPLICATION_NAME" value="table-viewer"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-25-openjdk-amd64/lib"/>
@@ -30,8 +28,6 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
-    <property name="java.awt.headless" value="true"/>
     <property name="surefire.real.class.path" value="/home/sfu/.openclaw/workspace/table-viewer/target/surefire/surefirebooter-20260401095339715_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.2+10-Ubuntu-124.04"/>
@@ -49,8 +45,6 @@
     <property name="user.dir" value="/home/sfu/.openclaw/workspace/table-viewer"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="PID" value="123457"/>
-    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
     <property name="native.encoding" value="UTF-8"/>
     <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
@@ -60,42 +54,12 @@
     <property name="stdin.encoding" value="UTF-8"/>
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
-    <property name="LOGGED_APPLICATION_NAME" value="[table-viewer] "/>
   </properties>
-  <testcase name="delete_shouldReturn204WhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.051">
-    <system-out><![CDATA[09:53:41.165 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.tableviewer.controller.ReaderRestControllerTest]: ReaderRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-09:53:41.271 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.tableviewer.TableViewerApplication for test class com.example.tableviewer.controller.ReaderRestControllerTest
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::               (v3.5.13)
-
-2026-04-01T09:53:41.528+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Starting ReaderRestControllerTest using Java 25.0.2 with PID 123457 (started by sfu in /home/sfu/.openclaw/workspace/table-viewer)
-2026-04-01T09:53:41.529+08:00 DEBUG 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Running with Spring Boot v3.5.13, Spring v6.2.17
-2026-04-01T09:53:41.529+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : No active profile set, falling back to 1 default profile: "default"
-2026-04-01T09:53:41.982+08:00  INFO 123457 --- [table-viewer] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
-2026-04-01T09:53:42.133+08:00  INFO 123457 --- [table-viewer] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:53:42.134+08:00  INFO 123457 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:53:42.135+08:00  INFO 123457 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2026-04-01T09:53:42.149+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Started ReaderRestControllerTest in 0.821 seconds (process running for 2.391)
-]]></system-out>
-  </testcase>
-  <testcase name="update_shouldReturnUpdatedReaderWhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.043"/>
-  <testcase name="findByName_shouldReturnMatchingReaders" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.037"/>
-  <testcase name="create_shouldReturnCreatedReader" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.005"/>
-  <testcase name="findById_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.004"/>
-  <testcase name="findById_shouldReturnReaderWhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.003"/>
-  <testcase name="delete_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.003"/>
-  <testcase name="findAll_shouldReturnEmptyPage" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.01">
-    <system-out><![CDATA[2026-04-01T09:53:42.314+08:00  WARN 123457 --- [table-viewer] [           main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
-	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
-	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
-
-]]></system-out>
-  </testcase>
+  <testcase name="delete_shouldReturnTrueWhenExists" classname="com.example.tableviewer.service.ReturnServiceTest" time="0.033"/>
+  <testcase name="findById_shouldReturnReturnWhenExists" classname="com.example.tableviewer.service.ReturnServiceTest" time="0.002"/>
+  <testcase name="findAll_shouldReturnPageOfReturns" classname="com.example.tableviewer.service.ReturnServiceTest" time="0.001"/>
+  <testcase name="create_shouldSaveAndReturnReturn" classname="com.example.tableviewer.service.ReturnServiceTest" time="0.001"/>
+  <testcase name="update_shouldUpdateAndReturnWhenExists" classname="com.example.tableviewer.service.ReturnServiceTest" time="0.002"/>
+  <testcase name="delete_shouldReturnFalseWhenNotExists" classname="com.example.tableviewer.service.ReturnServiceTest" time="0.002"/>
+  <testcase name="findByIsbn_shouldReturnMatchingReturns" classname="com.example.tableviewer.service.ReturnServiceTest" time="0.002"/>
 </testsuite>

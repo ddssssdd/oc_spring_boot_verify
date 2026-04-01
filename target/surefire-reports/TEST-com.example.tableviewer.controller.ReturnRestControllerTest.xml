@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.controller.ReaderRestControllerTest" time="1.214" tests="8" errors="0" skipped="0" failures="0" flakes="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.178" tests="8" errors="0" skipped="0" failures="0" flakes="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -62,9 +62,9 @@
     <property name="java.class.version" value="69.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[table-viewer] "/>
   </properties>
-  <testcase name="delete_shouldReturn204WhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.051">
-    <system-out><![CDATA[09:53:41.165 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.tableviewer.controller.ReaderRestControllerTest]: ReaderRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-09:53:41.271 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.tableviewer.TableViewerApplication for test class com.example.tableviewer.controller.ReaderRestControllerTest
+  <testcase name="delete_shouldReturn204WhenExists" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.006">
+    <system-out><![CDATA[2026-04-01T09:53:42.708+08:00  INFO 123457 --- [table-viewer] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.tableviewer.controller.ReturnRestControllerTest]: ReturnRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-04-01T09:53:42.713+08:00  INFO 123457 --- [table-viewer] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.tableviewer.TableViewerApplication for test class com.example.tableviewer.controller.ReturnRestControllerTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -75,24 +75,24 @@
 
  :: Spring Boot ::               (v3.5.13)
 
-2026-04-01T09:53:41.528+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Starting ReaderRestControllerTest using Java 25.0.2 with PID 123457 (started by sfu in /home/sfu/.openclaw/workspace/table-viewer)
-2026-04-01T09:53:41.529+08:00 DEBUG 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Running with Spring Boot v3.5.13, Spring v6.2.17
-2026-04-01T09:53:41.529+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : No active profile set, falling back to 1 default profile: "default"
-2026-04-01T09:53:41.982+08:00  INFO 123457 --- [table-viewer] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
-2026-04-01T09:53:42.133+08:00  INFO 123457 --- [table-viewer] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:53:42.134+08:00  INFO 123457 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:53:42.135+08:00  INFO 123457 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2026-04-01T09:53:42.149+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Started ReaderRestControllerTest in 0.821 seconds (process running for 2.391)
+2026-04-01T09:53:42.724+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReturnRestControllerTest         : Starting ReturnRestControllerTest using Java 25.0.2 with PID 123457 (started by sfu in /home/sfu/.openclaw/workspace/table-viewer)
+2026-04-01T09:53:42.725+08:00 DEBUG 123457 --- [table-viewer] [           main] c.e.t.c.ReturnRestControllerTest         : Running with Spring Boot v3.5.13, Spring v6.2.17
+2026-04-01T09:53:42.725+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReturnRestControllerTest         : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T09:53:42.813+08:00  INFO 123457 --- [table-viewer] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-04-01T09:53:42.844+08:00  INFO 123457 --- [table-viewer] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-01T09:53:42.845+08:00  INFO 123457 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-01T09:53:42.845+08:00  INFO 123457 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-04-01T09:53:42.849+08:00  INFO 123457 --- [table-viewer] [           main] c.e.t.c.ReturnRestControllerTest         : Started ReturnRestControllerTest in 0.135 seconds (process running for 3.091)
 ]]></system-out>
   </testcase>
-  <testcase name="update_shouldReturnUpdatedReaderWhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.043"/>
-  <testcase name="findByName_shouldReturnMatchingReaders" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.037"/>
-  <testcase name="create_shouldReturnCreatedReader" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.005"/>
-  <testcase name="findById_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.004"/>
-  <testcase name="findById_shouldReturnReaderWhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.003"/>
-  <testcase name="delete_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.003"/>
-  <testcase name="findAll_shouldReturnEmptyPage" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.01">
-    <system-out><![CDATA[2026-04-01T09:53:42.314+08:00  WARN 123457 --- [table-viewer] [           main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+  <testcase name="update_shouldReturnUpdatedReturnWhenExists" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.006"/>
+  <testcase name="findById_shouldReturnReturnWhenExists" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.004"/>
+  <testcase name="create_shouldReturnCreatedReturn" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.003"/>
+  <testcase name="findById_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.002"/>
+  <testcase name="findByIsbn_shouldReturnMatchingReturns" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.004"/>
+  <testcase name="delete_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.002"/>
+  <testcase name="findAll_shouldReturnEmptyPage" classname="com.example.tableviewer.controller.ReturnRestControllerTest" time="0.005">
+    <system-out><![CDATA[2026-04-01T09:53:42.883+08:00  WARN 123457 --- [table-viewer] [           main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
 	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
 	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
 

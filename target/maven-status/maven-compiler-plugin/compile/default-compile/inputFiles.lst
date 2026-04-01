@@ -5,6 +5,7 @@
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/controller/InventoryRestController.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/controller/PageController.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/controller/ReaderRestController.java
+/home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/controller/ReturnRestController.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/controller/TableController.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/controller/UserRestController.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/BookQueryDTO.java
@@ -18,6 +19,8 @@
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/InventoryResponseDTO.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/ReaderRequestDTO.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/ReaderResponseDTO.java
+/home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/ReturnRequestDTO.java
+/home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/ReturnResponseDTO.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/UserRequest.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/UserRequestDTO.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/dto/UserResponse.java
@@ -27,6 +30,7 @@
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/mapper/InboundMapper.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/mapper/InventoryMapper.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/mapper/ReaderMapper.java
+/home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/mapper/ReturnMapper.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/mapper/UserMapper.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/model/Book.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/model/Borrow.java
@@ -35,17 +39,20 @@
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/model/Inventory.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/model/InventoryId.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/model/Reader.java
+/home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/model/Return.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/model/User.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/repository/BookRepository.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/repository/BorrowRepository.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/repository/InboundRepository.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/repository/InventoryRepository.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/repository/ReaderRepository.java
+/home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/repository/ReturnRepository.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/repository/UserRepository.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/BookService.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/BorrowService.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/InboundService.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/InventoryService.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/ReaderService.java
+/home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/ReturnService.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/TableService.java
 /home/sfu/.openclaw/workspace/table-viewer/src/main/java/com/example/tableviewer/service/UserService.java

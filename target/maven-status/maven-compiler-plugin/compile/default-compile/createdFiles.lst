@@ -1,3 +1,4 @@
+com/example/tableviewer/dto/ReturnRequestDTO.class
 com/example/tableviewer/model/BorrowId.class
 com/example/tableviewer/dto/BorrowResponseDTO.class
 com/example/tableviewer/TableViewerApplication.class
@@ -11,6 +12,7 @@ com/example/tableviewer/dto/ReaderResponseDTO.class
 com/example/tableviewer/controller/ReaderRestController.class
 com/example/tableviewer/repository/BookRepository.class
 com/example/tableviewer/service/InboundService.class
+com/example/tableviewer/controller/ReturnRestController.class
 com/example/tableviewer/model/Inbound.class
 com/example/tableviewer/service/TableService.class
 com/example/tableviewer/mapper/ReaderMapper.class
@@ -35,6 +37,7 @@ com/example/tableviewer/dto/UserResponse.class
 com/example/tableviewer/model/InventoryId.class
 com/example/tableviewer/controller/BookRestController.class
 com/example/tableviewer/service/BorrowService.class
+com/example/tableviewer/model/Return.class
 com/example/tableviewer/model/Reader.class
 com/example/tableviewer/dto/BookResponseDTO.class
 com/example/tableviewer/repository/UserRepository.class
@@ -43,9 +46,13 @@ com/example/tableviewer/dto/BorrowRequestDTO.class
 com/example/tableviewer/dto/InboundRequestDTO.class
 com/example/tableviewer/mapper/BookMapper.class
 com/example/tableviewer/service/ReaderService.class
+com/example/tableviewer/mapper/ReturnMapper.class
 com/example/tableviewer/dto/BookQueryDTO.class
+com/example/tableviewer/service/ReturnService.class
 com/example/tableviewer/mapper/UserMapper.class
 com/example/tableviewer/model/Inventory.class
+com/example/tableviewer/repository/ReturnRepository.class
 com/example/tableviewer/model/Book.class
 com/example/tableviewer/dto/UserResponseDTO.class
 com/example/tableviewer/mapper/BorrowMapper.class
+com/example/tableviewer/dto/ReturnResponseDTO.class
