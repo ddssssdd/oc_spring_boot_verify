@@ -43,6 +43,11 @@ public class BorrowService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public Page<BorrowResponseDTO> search(String isbn, Long locationId, Pageable pageable) {
+        return repository.search(isbn, locationId, pageable).map(BorrowMapper::toDTO);
+    }
+
     public BorrowResponseDTO create(BorrowRequestDTO dto) {
         Borrow model = BorrowMapper.toModel(dto);
         return BorrowMapper.toDTO(repository.save(model));

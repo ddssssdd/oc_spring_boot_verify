@@ -368,6 +368,11 @@
                  @click="switchPage('inbound')">
                 📥 入库管理
             </div>
+            <div class="sidebar-item"
+                 :class="{ active: currentPage === 'borrow' }"
+                 @click="switchPage('borrow')">
+                📖 借阅管理
+            </div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-title">🗄️ 数据表</div>
@@ -557,6 +562,106 @@
             </div>
         </div>
 
+        <!-- =================== BORROW PAGE =================== -->
+        <div v-if="currentPage === 'borrow'" class="inbound-page">
+            <div class="toolbar">
+                <span class="table-name">📖 借阅管理</span>
+                <span class="spinner" v-if="loading">加载中...</span>
+            </div>
+
+            <!-- Search bar (top) -->
+            <div class="search-bar">
+                <div class="search-field">
+                    <label>ISBN</label>
+                    <input v-model="borrowSearch.isbn" placeholder="模糊匹配ISBN" @keyup.enter="searchBorrow" />
+                </div>
+                <div class="search-field">
+                    <label>书名</label>
+                    <input v-model="borrowSearch.bookName" placeholder="模糊匹配书名" @keyup.enter="searchBorrow" />
+                </div>
+                <div class="search-field">
+                    <label>库位ID</label>
+                    <input v-model.number="borrowSearch.locationId" placeholder="库位ID" type="number" @keyup.enter="searchBorrow" />
+                </div>
+                <div class="search-field">
+                    <label>读者ID</label>
+                    <input v-model.number="borrowSearch.readerId" placeholder="读者ID" type="number" @keyup.enter="searchBorrow" />
+                </div>
+                <button class="btn btn-primary" @click="searchBorrow">🔍 查询</button>
+                <button class="btn btn-success" @click="showBorrowModal">➕ 新建</button>
+            </div>
+
+            <!-- Summary bar -->
+            <div class="summary-bar" v-if="!loading && borrowTotal > 0">
+                <div class="summary-item">
+                    <span class="summary-label">总记录数:</span>
+                    <span class="summary-value">{{ borrowTotal }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">当前页借阅数:</span>
+                    <span class="summary-value">{{ borrowRows.length }}</span>
+                </div>
+            </div>
+
+            <!-- Middle: Table -->
+            <div class="inbound-middle">
+                <div class="table-container" style="padding-top: 12px;">
+                    <div v-if="loading" class="empty">
+                        <div class="empty-icon">⏳</div>
+                        <div>加载中...</div>
+                    </div>
+                    <div v-else-if="borrowRows.length === 0" class="empty">
+                        <div class="empty-icon">📭</div>
+                        <div>没有找到借阅记录</div>
+                    </div>
+                    <div v-else class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th v-for="col in borrowColumns" :key="col"
+                                        :class="{ sorted: borrowSortCol === col }"
+                                        @click="borrowSort(col)">
+                                        {{ col }}
+                                        <span class="sort-icon" v-if="borrowSortCol === col">
+                                            {{ borrowSortDir === 'asc' ? '↑' : '↓' }}
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(row, ri) in borrowRows" :key="ri">
+                                    <td v-for="col in borrowColumns" :key="col" :title="row[col]">
+                                        {{ row[col] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" v-if="!loading">
+                <span class="pagination-info">共 {{ borrowTotal }} 条 | 第 {{ borrowPage + 1 }} / {{ borrowTotalPages }} 页 | 每页 {{ borrowSize }} 条</span>
+                <div class="pagination-controls">
+                    <button @click="goBorrowPage(0)" :disabled="borrowPage === 0">首页</button>
+                    <button @click="goBorrowPage(borrowPage - 1)" :disabled="borrowPage === 0">上一页</button>
+                    <button v-for="p in borrowPageNumbers" :key="p"
+                            class="page-num"
+                            :class="{ active: p === borrowPage }"
+                            @click="goBorrowPage(p)">{{ p + 1 }}</button>
+                    <button @click="goBorrowPage(borrowPage + 1)" :disabled="borrowPage >= borrowTotalPages - 1">下一页</button>
+                    <button @click="goBorrowPage(borrowTotalPages - 1)" :disabled="borrowPage >= borrowTotalPages - 1">末页</button>
+                </div>
+            </div>
+
+            <!-- Bottom: Notes area (留空) -->
+            <div class="inbound-bottom">
+                <span>备注：</span>
+                <span style="color: #ccc;">（暂无）</span>
+            </div>
+        </div>
+
         <!-- =================== TABLE VIEWER PAGE =================== -->
         <div v-if="currentPage === 'table'">
             <div class="toolbar">
@@ -673,6 +778,60 @@
             </div>
         </div>
     </div>
+
+    <!-- =================== BORROW MODAL =================== -->
+    <div class="modal-overlay" v-if="borrowModalVisible" @click.self="closeBorrowModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span>📖 新增进借记录</span>
+                <button class="close-btn" @click="closeBorrowModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section-title">📖 书籍信息</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ISBN *</label>
+                        <input v-model="borrowForm.isbn" placeholder="如: 978-7-111-54742-1" />
+                    </div>
+                    <div class="form-group">
+                        <label>库位ID *</label>
+                        <input v-model.number="borrowForm.locationId" type="number" placeholder="库位ID" />
+                    </div>
+                </div>
+
+                <div class="form-section-title">👤 读者信息</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>读者ID *</label>
+                        <input v-model.number="borrowForm.readerId" type="number" placeholder="读者ID" />
+                    </div>
+                </div>
+
+                <div class="form-section-title">📅 借阅信息</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>借阅日期</label>
+                        <input v-model="borrowForm.borrowDate" type="date" />
+                    </div>
+                    <div class="form-group">
+                        <label>应还日期</label>
+                        <input v-model="borrowForm.dueDate" type="date" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <input v-model="borrowForm.status" placeholder="状态如: BORROWED" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" @click="closeBorrowModal">取消</button>
+                <button class="btn btn-success" @click="submitBorrow" :disabled="borrowSubmitting">
+                    <span v-if="borrowSubmitting">保存中...</span>
+                    <span v-else>💾 保存</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -736,6 +895,31 @@ createApp({
                 locationId: null,
                 qty: null,
                 receivedDate: ''
+            },
+
+            // ---- Borrow page ----
+            borrowColumns: ['id', 'isbn', 'locationId', 'readerId', 'bookName', 'readerName', 'borrowDate', 'dueDate', 'renewDate', 'status'],
+            borrowRows: [],
+            borrowTotal: 0,
+            borrowPage: 0,
+            borrowSize: 10,
+            borrowSortCol: 'id',
+            borrowSortDir: 'desc',
+            borrowSearch: {
+                isbn: '',
+                bookName: '',
+                locationId: null,
+                readerId: null
+            },
+            borrowModalVisible: false,
+            borrowSubmitting: false,
+            borrowForm: {
+                isbn: '',
+                locationId: null,
+                readerId: null,
+                borrowDate: '',
+                dueDate: '',
+                status: 'BORROWED'
             }
         };
     },
@@ -765,6 +949,19 @@ createApp({
                 pages.push(i);
             }
             return pages;
+        },
+        borrowTotalPages() {
+            return Math.ceil(this.borrowTotal / this.borrowSize) || 1;
+        },
+        borrowPageNumbers() {
+            const total = this.borrowTotalPages;
+            const cur = this.borrowPage;
+            const pages = [];
+            const delta = 2;
+            for (let i = Math.max(0, cur - delta); i <= Math.min(total - 1, cur + delta); i++) {
+                pages.push(i);
+            }
+            return pages;
         }
     },
     async mounted() {
@@ -779,6 +976,8 @@ createApp({
                 this.searchBooks();
             } else if (page === 'inbound') {
                 this.searchInbound();
+            } else if (page === 'borrow') {
+                this.searchBorrow();
             }
         },
 
@@ -1038,6 +1237,132 @@ createApp({
                 alert('保存失败: ' + e.message);
             } finally {
                 this.inboundSubmitting = false;
+            }
+        },
+
+        // ---- Borrow page ----
+        async searchBorrow() {
+            this.loading = true;
+            try {
+                let isbns = null;
+                if (this.borrowSearch.bookName && this.borrowSearch.bookName.trim()) {
+                    const bookRes = await fetch(`/api/books/search?name=${encodeURIComponent(this.borrowSearch.bookName)}&page=0&size=100`);
+                    const bookData = await bookRes.json();
+                    if (bookData.content && bookData.content.length > 0) {
+                        isbns = bookData.content.map(b => b.isbn);
+                    }
+                }
+
+                const params = new URLSearchParams({
+                    isbn: this.borrowSearch.isbn || '',
+                    page: this.borrowPage,
+                    size: this.borrowSize,
+                    sort: this.borrowSortCol,
+                    direction: this.borrowSortDir
+                });
+                if (this.borrowSearch.locationId) {
+                    params.set('locationId', this.borrowSearch.locationId);
+                }
+
+                const res = await fetch(`/api/borrows/search/page?${params}`);
+                let data = await res.json();
+
+                let rows = data.content || [];
+                if (isbns) {
+                    rows = rows.filter(r => isbns.includes(r.isbn));
+                }
+
+                // Enrich with book info and reader name
+                const enrichedRows = await Promise.all(rows.map(async (row) => {
+                    try {
+                        const bookRes = await fetch(`/api/books/${row.isbn}`);
+                        const readerRes = await fetch(`/api/readers/${row.readerId}`);
+                        const obj = { ...row, bookName: '-', readerName: '-' };
+                        if (bookRes.ok) {
+                            const book = await bookRes.json();
+                            obj.bookName = book.name || '-';
+                        }
+                        if (readerRes.ok) {
+                            const reader = await readerRes.json();
+                            obj.readerName = reader.name || '-';
+                        }
+                        return obj;
+                    } catch (e) {
+                        return { ...row, bookName: '-', readerName: '-' };
+                    }
+                }));
+
+                this.borrowRows = enrichedRows;
+                this.borrowTotal = data.totalElements || enrichedRows.length;
+            } catch (e) {
+                console.error('Search borrow error:', e);
+                this.borrowRows = [];
+                this.borrowTotal = 0;
+            } finally {
+                this.loading = false;
+            }
+        },
+        async borrowSort(col) {
+            if (this.borrowSortCol === col) {
+                this.borrowSortDir = this.borrowSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.borrowSortCol = col;
+                this.borrowSortDir = 'asc';
+            }
+            await this.searchBorrow();
+        },
+        async goBorrowPage(p) {
+            this.borrowPage = p;
+            await this.searchBorrow();
+        },
+        showBorrowModal() {
+            this.borrowForm = {
+                isbn: '',
+                locationId: null,
+                readerId: null,
+                borrowDate: '',
+                dueDate: '',
+                status: 'BORROWED'
+            };
+            this.borrowModalVisible = true;
+        },
+        closeBorrowModal() {
+            this.borrowModalVisible = false;
+        },
+        async submitBorrow() {
+            if (!this.borrowForm.isbn || !this.borrowForm.locationId || !this.borrowForm.readerId) {
+                alert('请填写必填字段：ISBN、库位ID、读者ID');
+                return;
+            }
+
+            this.borrowSubmitting = true;
+            try {
+                const dto = {
+                    isbn: this.borrowForm.isbn,
+                    locationId: this.borrowForm.locationId,
+                    readerId: this.borrowForm.readerId,
+                    userId: 1,
+                    borrowDate: this.borrowForm.borrowDate || null,
+                    dueDate: this.borrowForm.dueDate || null,
+                    renewDate: null,
+                    status: this.borrowForm.status || 'BORROWED'
+                };
+                const res = await fetch('/api/borrows', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dto)
+                });
+                if (!res.ok) {
+                    throw new Error('创建借阅记录失败');
+                }
+
+                this.closeBorrowModal();
+                this.borrowPage = 0;
+                await this.searchBorrow();
+            } catch (e) {
+                alert('保存失败: ' + e.message);
+            } finally {
+                this.borrowSubmitting = false;
             }
         }
     }
