@@ -373,6 +373,26 @@
                  @click="switchPage('borrow')">
                 📖 借阅管理
             </div>
+            <div class="sidebar-item"
+                 :class="{ active: currentPage === 'return' }"
+                 @click="switchPage('return')">
+                📤 归还管理
+            </div>
+            <div class="sidebar-item"
+                 :class="{ active: currentPage === 'reader' }"
+                 @click="switchPage('reader')">
+                👤 读者管理
+            </div>
+            <div class="sidebar-item"
+                 :class="{ active: currentPage === 'inventory' }"
+                 @click="switchPage('inventory')">
+                📦 库存管理
+            </div>
+            <div class="sidebar-item"
+                 :class="{ active: currentPage === 'role' }"
+                 @click="switchPage('role')">
+                🎭 角色管理
+            </div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-title">🗄️ 数据表</div>
@@ -832,6 +852,188 @@
             </div>
         </div>
     </div>
+
+    <!-- =================== RETURN PAGE =================== -->
+    <div v-if="currentPage === 'return'" class="inbound-page">
+        <div class="toolbar"><span class="table-name">📤 归还管理</span><span class="spinner" v-if="loading">加载中...</span></div>
+        <div class="search-bar">
+            <div class="search-field"><label>ISBN</label><input v-model="returnSearch.isbn" placeholder="模糊匹配ISBN" @keyup.enter="searchReturn" /></div>
+            <div class="search-field"><label>书名</label><input v-model="returnSearch.bookName" placeholder="模糊匹配书名" @keyup.enter="searchReturn" /></div>
+            <div class="search-field"><label>读者ID</label><input v-model.number="returnSearch.readerId" placeholder="读者ID" type="number" @keyup.enter="searchReturn" /></div>
+            <button class="btn btn-primary" @click="searchReturn">🔍 查询</button>
+            <button class="btn btn-success" @click="showReturnModal">➕ 新建</button>
+        </div>
+        <div class="summary-bar" v-if="!loading && returnTotal > 0">
+            <div class="summary-item"><span class="summary-label">总记录数:</span><span class="summary-value">{{ returnTotal }}</span></div>
+        </div>
+        <div class="inbound-middle">
+            <div class="table-container" style="padding-top:12px;">
+                <div v-if="loading" class="empty"><div class="empty-icon">⏳</div><div>加载中...</div></div>
+                <div v-else-if="returnRows.length === 0" class="empty"><div class="empty-icon">📭</div><div>没有找到归还记录</div></div>
+                <div v-else class="table-wrapper">
+                    <table><thead><tr><th v-for="col in returnColumns" :key="col" :class="{ sorted: returnSortCol === col }" @click="returnSort(col)">{{ col }}<span class="sort-icon" v-if="returnSortCol === col">{{ returnSortDir === 'asc' ? '↑' : '↓' }}</span></th></tr></thead>
+                    <tbody><tr v-for="(row, ri) in returnRows" :key="ri"><td v-for="col in returnColumns" :key="col" :title="row[col]">{{ row[col] }}</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="pagination" v-if="!loading">
+            <span class="pagination-info">共 {{ returnTotal }} 条 | 第 {{ returnPage + 1 }} / {{ returnTotalPages }} 页</span>
+            <div class="pagination-controls">
+                <button @click="goReturnPage(0)" :disabled="returnPage === 0">首页</button>
+                <button @click="goReturnPage(returnPage - 1)" :disabled="returnPage === 0">上一页</button>
+                <button v-for="p in returnPageNumbers" :key="p" class="page-num" :class="{ active: p === returnPage }" @click="goReturnPage(p)">{{ p + 1 }}</button>
+                <button @click="goReturnPage(returnPage + 1)" :disabled="returnPage >= returnTotalPages - 1">下一页</button>
+                <button @click="goReturnPage(returnTotalPages - 1)" :disabled="returnPage >= returnTotalPages - 1">末页</button>
+            </div>
+        </div>
+        <div class="inbound-bottom"><span>备注：</span><span style="color:#ccc;">（暂无）</span></div>
+    </div>
+
+    <!-- =================== READER PAGE =================== -->
+    <div v-if="currentPage === 'reader'" class="inbound-page">
+        <div class="toolbar"><span class="table-name">👤 读者管理</span><span class="spinner" v-if="loading">加载中...</span></div>
+        <div class="search-bar">
+            <div class="search-field"><label>姓名</label><input v-model="readerSearch.name" placeholder="模糊匹配姓名" @keyup.enter="searchReaders" /></div>
+            <button class="btn btn-primary" @click="searchReaders">🔍 查询</button>
+            <button class="btn btn-success" @click="showReaderModal">➕ 新建</button>
+        </div>
+        <div class="inbound-middle">
+            <div class="table-container" style="padding-top:12px;">
+                <div v-if="loading" class="empty"><div class="empty-icon">⏳</div><div>加载中...</div></div>
+                <div v-else-if="readerRows.length === 0" class="empty"><div class="empty-icon">📭</div><div>没有找到读者</div></div>
+                <div v-else class="table-wrapper">
+                    <table><thead><tr><th v-for="col in readerColumns" :key="col" :class="{ sorted: readerSortCol === col }" @click="readerSort(col)">{{ col }}<span class="sort-icon" v-if="readerSortCol === col">{{ readerSortDir === 'asc' ? '↑' : '↓' }}</span></th></tr></thead>
+                    <tbody><tr v-for="(row, ri) in readerRows" :key="ri"><td v-for="col in readerColumns" :key="col" :title="row[col]">{{ row[col] }}</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="pagination" v-if="!loading">
+            <span class="pagination-info">共 {{ readerTotal }} 条 | 第 {{ readerPage + 1 }} / {{ readerTotalPages }} 页</span>
+            <div class="pagination-controls">
+                <button @click="goReaderPage(0)" :disabled="readerPage === 0">首页</button>
+                <button @click="goReaderPage(readerPage - 1)" :disabled="readerPage === 0">上一页</button>
+                <button v-for="p in readerPageNumbers" :key="p" class="page-num" :class="{ active: p === readerPage }" @click="goReaderPage(p)">{{ p + 1 }}</button>
+                <button @click="goReaderPage(readerPage + 1)" :disabled="readerPage >= readerTotalPages - 1">下一页</button>
+                <button @click="goReaderPage(readerTotalPages - 1)" :disabled="readerPage >= readerTotalPages - 1">末页</button>
+            </div>
+        </div>
+        <div class="inbound-bottom"><span>备注：</span><span style="color:#ccc;">（暂无）</span></div>
+    </div>
+
+    <!-- =================== INVENTORY PAGE =================== -->
+    <div v-if="currentPage === 'inventory'" class="inbound-page">
+        <div class="toolbar"><span class="table-name">📦 库存管理</span><span class="spinner" v-if="loading">加载中...</span></div>
+        <div class="search-bar">
+            <div class="search-field"><label>ISBN</label><input v-model="inventorySearch.isbn" placeholder="模糊匹配ISBN" @keyup.enter="searchInventory" /></div>
+            <div class="search-field"><label>书名</label><input v-model="inventorySearch.bookName" placeholder="模糊匹配书名" @keyup.enter="searchInventory" /></div>
+            <button class="btn btn-primary" @click="searchInventory">🔍 查询</button>
+        </div>
+        <div class="summary-bar" v-if="!loading && inventoryTotal > 0">
+            <div class="summary-item"><span class="summary-label">总记录数:</span><span class="summary-value">{{ inventoryTotal }}</span></div>
+            <div class="summary-item"><span class="summary-label">总库存数量:</span><span class="summary-value">{{ inventoryTotalQty }}</span></div>
+        </div>
+        <div class="inbound-middle">
+            <div class="table-container" style="padding-top:12px;">
+                <div v-if="loading" class="empty"><div class="empty-icon">⏳</div><div>加载中...</div></div>
+                <div v-else-if="inventoryRows.length === 0" class="empty"><div class="empty-icon">📭</div><div>没有找到库存记录</div></div>
+                <div v-else class="table-wrapper">
+                    <table><thead><tr><th v-for="col in inventoryColumns" :key="col" :class="{ sorted: inventorySortCol === col }" @click="inventorySort(col)">{{ col }}<span class="sort-icon" v-if="inventorySortCol === col">{{ inventorySortDir === 'asc' ? '↑' : '↓' }}</span></th></tr></thead>
+                    <tbody><tr v-for="(row, ri) in inventoryRows" :key="ri"><td v-for="col in inventoryColumns" :key="col" :title="row[col]">{{ row[col] }}</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="pagination" v-if="!loading">
+            <span class="pagination-info">共 {{ inventoryTotal }} 条 | 第 {{ inventoryPage + 1 }} / {{ inventoryTotalPages }} 页</span>
+            <div class="pagination-controls">
+                <button @click="goInventoryPage(0)" :disabled="inventoryPage === 0">首页</button>
+                <button @click="goInventoryPage(inventoryPage - 1)" :disabled="inventoryPage === 0">上一页</button>
+                <button v-for="p in inventoryPageNumbers" :key="p" class="page-num" :class="{ active: p === inventoryPage }" @click="goInventoryPage(p)">{{ p + 1 }}</button>
+                <button @click="goInventoryPage(inventoryPage + 1)" :disabled="inventoryPage >= inventoryTotalPages - 1">下一页</button>
+                <button @click="goInventoryPage(inventoryTotalPages - 1)" :disabled="inventoryPage >= inventoryTotalPages - 1">末页</button>
+            </div>
+        </div>
+        <div class="inbound-bottom"><span>备注：</span><span style="color:#ccc;">（暂无）</span></div>
+    </div>
+
+    <!-- =================== ROLE PAGE =================== -->
+    <div v-if="currentPage === 'role'" class="inbound-page">
+        <div class="toolbar"><span class="table-name">🎭 角色管理</span><span class="spinner" v-if="loading">加载中...</span></div>
+        <div class="search-bar">
+            <div class="search-field"><label>角色名</label><input v-model="roleSearch.roleName" placeholder="模糊匹配角色名" @keyup.enter="searchRoles" /></div>
+            <button class="btn btn-primary" @click="searchRoles">🔍 查询</button>
+            <button class="btn btn-success" @click="showRoleModal">➕ 新建</button>
+        </div>
+        <div class="inbound-middle">
+            <div class="table-container" style="padding-top:12px;">
+                <div v-if="loading" class="empty"><div class="empty-icon">⏳</div><div>加载中...</div></div>
+                <div v-else-if="roleRows.length === 0" class="empty"><div class="empty-icon">📭</div><div>没有找到角色</div></div>
+                <div v-else class="table-wrapper">
+                    <table><thead><tr><th v-for="col in roleColumns" :key="col" :class="{ sorted: roleSortCol === col }" @click="roleSort(col)">{{ col }}<span class="sort-icon" v-if="roleSortCol === col">{{ roleSortDir === 'asc' ? '↑' : '↓' }}</span></th></tr></thead>
+                    <tbody><tr v-for="(row, ri) in roleRows" :key="ri"><td v-for="col in roleColumns" :key="col" :title="row[col]">{{ row[col] }}</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="pagination" v-if="!loading">
+            <span class="pagination-info">共 {{ roleTotal }} 条 | 第 {{ rolePage + 1 }} / {{ roleTotalPages }} 页</span>
+            <div class="pagination-controls">
+                <button @click="goRolePage(0)" :disabled="rolePage === 0">首页</button>
+                <button @click="goRolePage(rolePage - 1)" :disabled="rolePage === 0">上一页</button>
+                <button v-for="p in rolePageNumbers" :key="p" class="page-num" :class="{ active: p === rolePage }" @click="goRolePage(p)">{{ p + 1 }}</button>
+                <button @click="goRolePage(rolePage + 1)" :disabled="rolePage >= roleTotalPages - 1">下一页</button>
+                <button @click="goRolePage(roleTotalPages - 1)" :disabled="rolePage >= roleTotalPages - 1">末页</button>
+            </div>
+        </div>
+        <div class="inbound-bottom"><span>备注：</span><span style="color:#ccc;">（暂无）</span></div>
+    </div>
+
+    <!-- =================== MODALS FOR NEW PAGES =================== -->
+    <div class="modal-overlay" v-if="returnModalVisible" @click.self="closeReturnModal">
+        <div class="modal">
+            <div class="modal-header"><span>📤 新增归还记录</span><button class="close-btn" @click="closeReturnModal">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-row"><div class="form-group"><label>ISBN *</label><input v-model="returnForm.isbn" placeholder="ISBN" /></div></div>
+                <div class="form-row"><div class="form-group"><label>读者ID *</label><input v-model.number="returnForm.readerId" type="number" placeholder="读者ID" /></div></div>
+                <div class="form-row"><div class="form-group"><label>归还日期</label><input v-model="returnForm.returnDate" type="date" /></div><div class="form-group"><label>库位ID</label><input v-model.number="returnForm.locationId" type="number" placeholder="库位ID" /></div></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" @click="closeReturnModal">取消</button>
+                <button class="btn btn-success" @click="submitReturn" :disabled="returnSubmitting"><span v-if="returnSubmitting">保存中...</span><span v-else>💾 保存</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" v-if="readerModalVisible" @click.self="closeReaderModal">
+        <div class="modal">
+            <div class="modal-header"><span>👤 新增读者</span><button class="close-btn" @click="closeReaderModal">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-row"><div class="form-group"><label>姓名 *</label><input v-model="readerForm.name" placeholder="姓名" /></div><div class="form-group"><label>性别</label><input v-model="readerForm.gender" placeholder="男/女" /></div></div>
+                <div class="form-row"><div class="form-group"><label>生日</label><input v-model="readerForm.birthday" type="date" /></div><div class="form-group"><label>注册日期</label><input v-model="readerForm.registeredDate" type="date" /></div></div>
+                <div class="form-group"><label>状态</label><input v-model="readerForm.status" placeholder="状态如: ACTIVE" /></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" @click="closeReaderModal">取消</button>
+                <button class="btn btn-success" @click="submitReader" :disabled="readerSubmitting"><span v-if="readerSubmitting">保存中...</span><span v-else>💾 保存</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" v-if="roleModalVisible" @click.self="closeRoleModal">
+        <div class="modal">
+            <div class="modal-header"><span>🎭 新增角色</span><button class="close-btn" @click="closeRoleModal">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label>角色名 *</label><input v-model="roleForm.roleName" placeholder="角色名" /></div>
+                <div class="form-group"><label>描述</label><input v-model="roleForm.description" placeholder="角色描述" /></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" @click="closeRoleModal">取消</button>
+                <button class="btn btn-success" @click="submitRole" :disabled="roleSubmitting"><span v-if="roleSubmitting">保存中...</span><span v-else>💾 保存</span></button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -920,7 +1122,57 @@ createApp({
                 borrowDate: '',
                 dueDate: '',
                 status: 'BORROWED'
-            }
+            },
+
+            // ---- Return page ----
+            returnColumns: ['id', 'isbn', 'name', 'readerId', 'readerName', 'returnDate', 'locationId'],
+            returnRows: [],
+            returnTotal: 0,
+            returnPage: 0,
+            returnSize: 10,
+            returnSortCol: 'id',
+            returnSortDir: 'desc',
+            returnSearch: { isbn: '', bookName: '', readerId: null },
+            returnModalVisible: false,
+            returnSubmitting: false,
+            returnForm: { isbn: '', readerId: null, returnDate: '', locationId: null },
+
+            // ---- Reader page ----
+            readerColumns: ['id', 'name', 'gender', 'birthday', 'registeredDate', 'activeFlag', 'status'],
+            readerRows: [],
+            readerTotal: 0,
+            readerPage: 0,
+            readerSize: 10,
+            readerSortCol: 'id',
+            readerSortDir: 'desc',
+            readerSearch: { name: '' },
+            readerModalVisible: false,
+            readerSubmitting: false,
+            readerForm: { name: '', gender: '', birthday: '', registeredDate: '', activeFlag: true, status: 'ACTIVE' },
+
+            // ---- Inventory page ----
+            inventoryColumns: ['isbn', 'name', 'locationId', 'qty', 'updateDate'],
+            inventoryRows: [],
+            inventoryTotal: 0,
+            inventoryTotalQty: 0,
+            inventoryPage: 0,
+            inventorySize: 10,
+            inventorySortCol: 'isbn',
+            inventorySortDir: 'asc',
+            inventorySearch: { isbn: '', bookName: '' },
+
+            // ---- Role page ----
+            roleColumns: ['id', 'roleName', 'description'],
+            roleRows: [],
+            roleTotal: 0,
+            rolePage: 0,
+            roleSize: 10,
+            roleSortCol: 'id',
+            roleSortDir: 'asc',
+            roleSearch: { roleName: '' },
+            roleModalVisible: false,
+            roleSubmitting: false,
+            roleForm: { roleName: '', description: '' }
         };
     },
     computed: {
@@ -962,6 +1214,58 @@ createApp({
                 pages.push(i);
             }
             return pages;
+        },
+        returnTotalPages() {
+            return Math.ceil(this.returnTotal / this.returnSize) || 1;
+        },
+        returnPageNumbers() {
+            const total = this.returnTotalPages;
+            const cur = this.returnPage;
+            const pages = [];
+            const delta = 2;
+            for (let i = Math.max(0, cur - delta); i <= Math.min(total - 1, cur + delta); i++) {
+                pages.push(i);
+            }
+            return pages;
+        },
+        readerTotalPages() {
+            return Math.ceil(this.readerTotal / this.readerSize) || 1;
+        },
+        readerPageNumbers() {
+            const total = this.readerTotalPages;
+            const cur = this.readerPage;
+            const pages = [];
+            const delta = 2;
+            for (let i = Math.max(0, cur - delta); i <= Math.min(total - 1, cur + delta); i++) {
+                pages.push(i);
+            }
+            return pages;
+        },
+        inventoryTotalPages() {
+            return Math.ceil(this.inventoryTotal / this.inventorySize) || 1;
+        },
+        inventoryPageNumbers() {
+            const total = this.inventoryTotalPages;
+            const cur = this.inventoryPage;
+            const pages = [];
+            const delta = 2;
+            for (let i = Math.max(0, cur - delta); i <= Math.min(total - 1, cur + delta); i++) {
+                pages.push(i);
+            }
+            return pages;
+        },
+        roleTotalPages() {
+            return Math.ceil(this.roleTotal / this.roleSize) || 1;
+        },
+        rolePageNumbers() {
+            const total = this.roleTotalPages;
+            const cur = this.rolePage;
+            const pages = [];
+            const delta = 2;
+            for (let i = Math.max(0, cur - delta); i <= Math.min(total - 1, cur + delta); i++) {
+                pages.push(i);
+            }
+            return pages;
         }
     },
     async mounted() {
@@ -978,6 +1282,14 @@ createApp({
                 this.searchInbound();
             } else if (page === 'borrow') {
                 this.searchBorrow();
+            } else if (page === 'return') {
+                this.searchReturn();
+            } else if (page === 'reader') {
+                this.searchReaders();
+            } else if (page === 'inventory') {
+                this.searchInventory();
+            } else if (page === 'role') {
+                this.searchRoles();
             }
         },
 
@@ -1364,6 +1676,143 @@ createApp({
             } finally {
                 this.borrowSubmitting = false;
             }
+        },
+
+        // ---- Return page ----
+        async searchReturn() {
+            this.loading = true;
+            try {
+                let isbns = null;
+                if (this.returnSearch.bookName && this.returnSearch.bookName.trim()) {
+                    const bookRes = await fetch(`/api/books/search?name=${encodeURIComponent(this.returnSearch.bookName)}&page=0&size=100`);
+                    const bookData = await bookRes.json();
+                    if (bookData.content && bookData.content.length > 0) {
+                        isbns = bookData.content.map(b => b.isbn);
+                    }
+                }
+                const params = new URLSearchParams({ isbn: this.returnSearch.isbn || '', page: this.returnPage, size: this.returnSize, sort: this.returnSortCol, direction: this.returnSortDir });
+                const res = await fetch(`/api/returns/search?isbn=${this.returnSearch.isbn || ''}`);
+                let data = await res.json();
+                let rows = Array.isArray(data) ? data : [];
+                if (isbns) rows = rows.filter(r => isbns.includes(r.isbn));
+                if (this.returnSearch.readerId) rows = rows.filter(r => r.readerId == this.returnSearch.readerId);
+                const enrichedRows = await Promise.all(rows.map(async (row) => {
+                    try {
+                        const bookRes = await fetch(`/api/books/${row.isbn}`);
+                        const readerRes = await fetch(`/api/readers/${row.readerId}`);
+                        const obj = { ...row, name: '-', readerName: '-' };
+                        if (bookRes.ok) { const book = await bookRes.json(); obj.name = book.name || '-'; }
+                        if (readerRes.ok) { const reader = await readerRes.json(); obj.readerName = reader.name || '-'; }
+                        return obj;
+                    } catch (e) { return { ...row, name: '-', readerName: '-' }; }
+                }));
+                this.returnRows = enrichedRows;
+                this.returnTotal = enrichedRows.length;
+            } catch (e) { console.error(e); this.returnRows = []; this.returnTotal = 0; } finally { this.loading = false; }
+        },
+        async returnSort(col) { if (this.returnSortCol === col) { this.returnSortDir = this.returnSortDir === 'asc' ? 'desc' : 'asc'; } else { this.returnSortCol = col; this.returnSortDir = 'asc'; } await this.searchReturn(); },
+        async goReturnPage(p) { this.returnPage = p; await this.searchReturn(); },
+        showReturnModal() { this.returnForm = { isbn: '', readerId: null, returnDate: '', locationId: null }; this.returnModalVisible = true; },
+        closeReturnModal() { this.returnModalVisible = false; },
+        async submitReturn() {
+            if (!this.returnForm.isbn || !this.returnForm.readerId) { alert('请填写必填字段'); return; }
+            this.returnSubmitting = true;
+            try {
+                const dto = { isbn: this.returnForm.isbn, readerId: this.returnForm.readerId, returnDate: this.returnForm.returnDate || null, locationId: this.returnForm.locationId, userId: 1 };
+                const res = await fetch('/api/returns', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dto) });
+                if (!res.ok) throw new Error('创建失败');
+                this.closeReturnModal();
+                this.returnPage = 0;
+                await this.searchReturn();
+            } catch (e) { alert('保存失败: ' + e.message); } finally { this.returnSubmitting = false; }
+        },
+
+        // ---- Reader page ----
+        async searchReaders() {
+            this.loading = true;
+            try {
+                const params = new URLSearchParams({ page: this.readerPage, size: this.readerSize, sort: this.readerSortCol, direction: this.readerSortDir });
+                if (this.readerSearch.name) params.set('sort', 'name');
+                const res = await fetch(`/api/readers?${params}`);
+                const data = await res.json();
+                this.readerRows = data.content || [];
+                this.readerTotal = data.totalElements || 0;
+            } catch (e) { console.error(e); this.readerRows = []; this.readerTotal = 0; } finally { this.loading = false; }
+        },
+        async readerSort(col) { if (this.readerSortCol === col) { this.readerSortDir = this.readerSortDir === 'asc' ? 'desc' : 'asc'; } else { this.readerSortCol = col; this.readerSortDir = 'asc'; } await this.searchReaders(); },
+        async goReaderPage(p) { this.readerPage = p; await this.searchReaders(); },
+        showReaderModal() { this.readerForm = { name: '', gender: '', birthday: '', registeredDate: '', activeFlag: true, status: 'ACTIVE' }; this.readerModalVisible = true; },
+        closeReaderModal() { this.readerModalVisible = false; },
+        async submitReader() {
+            if (!this.readerForm.name) { alert('请填写必填字段'); return; }
+            this.readerSubmitting = true;
+            try {
+                const dto = { name: this.readerForm.name, gender: this.readerForm.gender || null, birthday: this.readerForm.birthday || null, registeredDate: this.readerForm.registeredDate || null, activeFlag: this.readerForm.activeFlag, status: this.readerForm.status || 'ACTIVE' };
+                const res = await fetch('/api/readers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dto) });
+                if (!res.ok) throw new Error('创建失败');
+                this.closeReaderModal();
+                this.readerPage = 0;
+                await this.searchReaders();
+            } catch (e) { alert('保存失败: ' + e.message); } finally { this.readerSubmitting = false; }
+        },
+
+        // ---- Inventory page ----
+        async searchInventory() {
+            this.loading = true;
+            try {
+                const params = new URLSearchParams({ page: this.inventoryPage, size: this.inventorySize, sort: this.inventorySortCol, direction: this.inventorySortDir });
+                const res = await fetch(`/api/inventories?${params}`);
+                const data = await res.json();
+                let rows = data.content || [];
+                if (this.inventorySearch.bookName && this.inventorySearch.bookName.trim()) {
+                    const bookRes = await fetch(`/api/books/search?name=${encodeURIComponent(this.inventorySearch.bookName)}&page=0&size=100`);
+                    const bookData = await bookRes.json();
+                    const isbns = (bookData.content || []).map(b => b.isbn);
+                    rows = rows.filter(r => isbns.includes(r.isbn));
+                }
+                if (this.inventorySearch.isbn) rows = rows.filter(r => r.isbn.includes(this.inventorySearch.isbn));
+                const enrichedRows = await Promise.all(rows.map(async (row) => {
+                    try {
+                        const bookRes = await fetch(`/api/books/${row.isbn}`);
+                        const obj = { ...row, name: '-' };
+                        if (bookRes.ok) { const book = await bookRes.json(); obj.name = book.name || '-'; }
+                        return obj;
+                    } catch (e) { return { ...row, name: '-' }; }
+                }));
+                this.inventoryRows = enrichedRows;
+                this.inventoryTotal = enrichedRows.length;
+                this.inventoryTotalQty = enrichedRows.reduce((sum, r) => sum + (r.qty || 0), 0);
+            } catch (e) { console.error(e); this.inventoryRows = []; this.inventoryTotal = 0; this.inventoryTotalQty = 0; } finally { this.loading = false; }
+        },
+        async inventorySort(col) { if (this.inventorySortCol === col) { this.inventorySortDir = this.inventorySortDir === 'asc' ? 'desc' : 'asc'; } else { this.inventorySortCol = col; this.inventorySortDir = 'asc'; } await this.searchInventory(); },
+        async goInventoryPage(p) { this.inventoryPage = p; await this.searchInventory(); },
+
+        // ---- Role page ----
+        async searchRoles() {
+            this.loading = true;
+            try {
+                const params = new URLSearchParams({ page: this.rolePage, size: this.roleSize, sort: this.roleSortCol, direction: this.roleSortDir });
+                const res = await fetch(`/api/roles?${params}`);
+                const data = await res.json();
+                this.roleRows = data.content || [];
+                this.roleTotal = data.totalElements || 0;
+            } catch (e) { console.error(e); this.roleRows = []; this.roleTotal = 0; } finally { this.loading = false; }
+        },
+        async roleSort(col) { if (this.roleSortCol === col) { this.roleSortDir = this.roleSortDir === 'asc' ? 'desc' : 'asc'; } else { this.roleSortCol = col; this.roleSortDir = 'asc'; } await this.searchRoles(); },
+        async goRolePage(p) { this.rolePage = p; await this.searchRoles(); },
+        showRoleModal() { this.roleForm = { roleName: '', description: '' }; this.roleModalVisible = true; },
+        closeRoleModal() { this.roleModalVisible = false; },
+        async submitRole() {
+            if (!this.roleForm.roleName) { alert('请填写必填字段'); return; }
+            this.roleSubmitting = true;
+            try {
+                const dto = { roleName: this.roleForm.roleName, description: this.roleForm.description || null };
+                const res = await fetch('/api/roles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dto) });
+                if (!res.ok) throw new Error('创建失败');
+                this.closeRoleModal();
+                this.rolePage = 0;
+                await this.searchRoles();
+            } catch (e) { alert('保存失败: ' + e.message); } finally { this.roleSubmitting = false; }
         }
     }
 }).mount('#app');

@@ -22,6 +22,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,11 +33,14 @@ class BorrowServiceTest {
     @Mock
     private BorrowRepository repository;
 
+    @Mock
+    private InventoryService inventoryService;
+
     private BorrowService service;
 
     @BeforeEach
     void setUp() {
-        service = new BorrowService(repository);
+        service = new BorrowService(repository, inventoryService);
     }
 
     @Test
@@ -87,6 +93,9 @@ class BorrowServiceTest {
         dto.setDueDate(LocalDate.of(2024, 2, 15));
         dto.setStatus("BORROWED");
 
+        // Mock inventory decrease
+        when(inventoryService.decreaseQty(anyString(), anyLong(), anyInt())).thenReturn(true);
+
         Borrow savedBorrow = createTestBorrow();
         when(repository.save(any(Borrow.class))).thenReturn(savedBorrow);
 
@@ -94,6 +103,7 @@ class BorrowServiceTest {
 
         assertNotNull(result);
         assertEquals("978-7-111-54742-1", result.getIsbn());
+        verify(inventoryService, times(1)).decreaseQty("978-7-111-54742-1", 1L, 1);
         verify(repository, times(1)).save(any(Borrow.class));
     }
 

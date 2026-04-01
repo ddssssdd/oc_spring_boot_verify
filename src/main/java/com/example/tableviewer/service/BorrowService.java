@@ -20,9 +20,15 @@ import java.util.stream.Collectors;
 public class BorrowService {
 
     private final BorrowRepository repository;
+    private final InventoryService inventoryService;
 
-    public BorrowService(BorrowRepository repository) {
+    public BorrowService(BorrowRepository repository, InventoryService inventoryService) {
         this.repository = repository;
+        this.inventoryService = inventoryService;
+    }
+
+    public static class InsufficientStockException extends RuntimeException {
+        public InsufficientStockException(String msg) { super(msg); }
     }
 
     @Transactional(readOnly = true)
@@ -49,6 +55,12 @@ public class BorrowService {
     }
 
     public BorrowResponseDTO create(BorrowRequestDTO dto) {
+        // Check and decrease inventory stock
+        boolean decreased = inventoryService.decreaseQty(dto.getIsbn(), dto.getLocationId(), 1);
+        if (!decreased) {
+            throw new InsufficientStockException(
+                "库存不足，无法借阅！ISBN: " + dto.getIsbn() + ", 库位: " + dto.getLocationId());
+        }
         Borrow model = BorrowMapper.toModel(dto);
         return BorrowMapper.toDTO(repository.save(model));
     }

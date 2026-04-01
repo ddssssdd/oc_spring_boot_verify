@@ -1,17 +1,28 @@
 package com.example.tableviewer.dto;
 
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class BorrowRequestDTO {
 
+    @NotBlank(message = "ISBN不能为空")
     private String isbn;
+
+    @NotNull(message = "库位ID不能为空")
     private Long locationId;
+
+    @NotNull(message = "读者ID不能为空")
     private Long readerId;
+
     private Long userId;
+
     private LocalDate borrowDate;
+
     private LocalDate dueDate;
+
     private LocalDate renewDate;
+
+    @Size(max = 20, message = "状态长度不能超过20")
     private String status;
 
     public String getIsbn() { return isbn; }

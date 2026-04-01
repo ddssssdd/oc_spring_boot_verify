@@ -1,15 +1,25 @@
 package com.example.tableviewer.dto;
 
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class InboundRequestDTO {
 
     private Long id;
+
+    @NotBlank(message = "ISBN不能为空")
     private String isbn;
+
     private Long userId;
+
+    @NotNull(message = "库位ID不能为空")
     private Long locationId;
+
+    @NotNull(message = "数量不能为空")
+    @Min(value = 1, message = "数量至少为1")
     private Integer qty;
+
     private LocalDate receivedDate;
     private LocalDateTime putawayDate;
 

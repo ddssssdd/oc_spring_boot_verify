@@ -64,4 +64,42 @@ public class InventoryService {
         }
         return false;
     }
+
+    /**
+     * Decrease inventory qty by given amount
+     * @return true if successful, false if insufficient stock
+     */
+    public boolean decreaseQty(String isbn, Long locationId, int amount) {
+        Optional<Inventory> opt = repository.findById(new InventoryId(isbn, locationId));
+        if (opt.isEmpty()) return false;
+        Inventory inv = opt.get();
+        if (inv.getQty() < amount) return false;
+        inv.setQty(inv.getQty() - amount);
+        inv.setUpdateDate(java.time.LocalDateTime.now());
+        repository.save(inv);
+        return true;
+    }
+
+    /**
+     * Increase inventory qty by given amount
+     * @return true if successful, false if record not found
+     */
+    public boolean increaseQty(String isbn, Long locationId, int amount) {
+        Optional<Inventory> opt = repository.findById(new InventoryId(isbn, locationId));
+        if (opt.isEmpty()) return false;
+        Inventory inv = opt.get();
+        inv.setQty(inv.getQty() + amount);
+        inv.setUpdateDate(java.time.LocalDateTime.now());
+        repository.save(inv);
+        return true;
+    }
+
+    /**
+     * Get current qty for isbn+locationId
+     */
+    @Transactional(readOnly = true)
+    public int getQty(String isbn, Long locationId) {
+        return repository.findById(new InventoryId(isbn, locationId))
+                .map(Inventory::getQty).orElse(0);
+    }
 }

@@ -1,5 +1,6 @@
 com/example/tableviewer/service/ReturnServiceTest.class
 com/example/tableviewer/controller/BookRestControllerTest.class
+com/example/tableviewer/service/RoleServiceTest.class
 com/example/tableviewer/controller/InventoryRestControllerTest.class
 com/example/tableviewer/service/UserServiceTest.class
 com/example/tableviewer/controller/UserRestControllerTest.class
@@ -10,6 +11,7 @@ com/example/tableviewer/service/InboundServiceTest.class
 com/example/tableviewer/controller/ReaderRestControllerTest.class
 com/example/tableviewer/controller/InboundRestControllerTest.class
 com/example/tableviewer/integration/BookFlowIntegrationTest.class
+com/example/tableviewer/controller/RoleRestControllerTest.class
 com/example/tableviewer/controller/BorrowRestControllerTest.class
 com/example/tableviewer/service/ReaderServiceTest.class
 com/example/tableviewer/service/InventoryServiceTest.class

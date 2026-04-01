@@ -19,9 +19,11 @@ import java.util.stream.Collectors;
 public class ReturnService {
 
     private final ReturnRepository repository;
+    private final InventoryService inventoryService;
 
-    public ReturnService(ReturnRepository repository) {
+    public ReturnService(ReturnRepository repository, InventoryService inventoryService) {
         this.repository = repository;
+        this.inventoryService = inventoryService;
     }
 
     @Transactional(readOnly = true)
@@ -43,6 +45,10 @@ public class ReturnService {
     }
 
     public ReturnResponseDTO create(ReturnRequestDTO dto) {
+        // Increase inventory stock on return
+        if (dto.getLocationId() != null) {
+            inventoryService.increaseQty(dto.getIsbn(), dto.getLocationId(), 1);
+        }
         Return model = ReturnMapper.toModel(dto);
         return ReturnMapper.toDTO(repository.save(model));
     }

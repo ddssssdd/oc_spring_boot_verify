@@ -3,6 +3,7 @@ package com.example.tableviewer.controller;
 import com.example.tableviewer.dto.BorrowRequestDTO;
 import com.example.tableviewer.dto.BorrowResponseDTO;
 import com.example.tableviewer.service.BorrowService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -62,7 +63,7 @@ public class BorrowRestController {
     }
 
     @PostMapping
-    public ResponseEntity<BorrowResponseDTO> create(@RequestBody BorrowRequestDTO dto) {
+    public ResponseEntity<BorrowResponseDTO> create(@Valid @RequestBody BorrowRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
@@ -71,7 +72,7 @@ public class BorrowRestController {
             @PathVariable String isbn,
             @PathVariable Long locationId,
             @PathVariable Long readerId,
-            @RequestBody BorrowRequestDTO dto) {
+            @Valid @RequestBody BorrowRequestDTO dto) {
         return service.update(isbn, locationId, readerId, dto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 

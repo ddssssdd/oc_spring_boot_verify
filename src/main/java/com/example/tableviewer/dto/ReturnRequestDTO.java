@@ -1,14 +1,22 @@
 package com.example.tableviewer.dto;
 
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public class ReturnRequestDTO {
 
     private Long id;
+
+    @NotBlank(message = "ISBN不能为空")
     private String isbn;
+
+    @NotNull(message = "读者ID不能为空")
     private Long readerId;
+
     private LocalDate returnDate;
+
     private Long locationId;
+
     private Long userId;
 
     public Long getId() { return id; }

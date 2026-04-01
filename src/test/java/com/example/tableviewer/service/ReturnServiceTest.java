@@ -21,6 +21,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,11 +32,14 @@ class ReturnServiceTest {
     @Mock
     private ReturnRepository repository;
 
+    @Mock
+    private InventoryService inventoryService;
+
     private ReturnService service;
 
     @BeforeEach
     void setUp() {
-        service = new ReturnService(repository);
+        service = new ReturnService(repository, inventoryService);
     }
 
     @Test
@@ -83,6 +89,9 @@ class ReturnServiceTest {
         dto.setLocationId(1L);
         dto.setUserId(1L);
 
+        // Mock inventory increase
+        when(inventoryService.increaseQty(anyString(), anyLong(), anyInt())).thenReturn(true);
+
         Return savedReturn = createTestReturn();
         when(repository.save(any(Return.class))).thenReturn(savedReturn);
 
@@ -90,6 +99,7 @@ class ReturnServiceTest {
 
         assertNotNull(result);
         assertEquals("978-7-111-54742-1", result.getIsbn());
+        verify(inventoryService, times(1)).increaseQty("978-7-111-54742-1", 1L, 1);
         verify(repository, times(1)).save(any(Return.class));
     }
 
