@@ -42,6 +42,11 @@ public class InboundService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public Page<InboundResponseDTO> search(String isbn, Long locationId, Pageable pageable) {
+        return repository.search(isbn, locationId, pageable).map(InboundMapper::toDTO);
+    }
+
     public InboundResponseDTO create(InboundRequestDTO dto) {
         Inbound model = InboundMapper.toModel(dto);
         return InboundMapper.toDTO(repository.save(model));

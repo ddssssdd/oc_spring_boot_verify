@@ -187,6 +187,8 @@
         .btn-primary:hover { background: #2a2a4e; }
         .btn-ghost { background: #f0f0f0; color: #555; }
         .btn-ghost:hover { background: #e0e0e0; }
+        .btn-success { background: #28a745; color: #fff; }
+        .btn-success:hover { background: #218838; }
 
         /* Pagination */
         .pagination {
@@ -213,6 +215,139 @@
         .pagination-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
         .page-num { padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; }
         .page-num.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+
+        /* =====================
+           INBOUND PAGE STYLES
+           ===================== */
+        .inbound-page {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .inbound-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .inbound-middle {
+            flex: 1;
+            overflow: auto;
+        }
+        .inbound-bottom {
+            background: #fff;
+            padding: 12px 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #888;
+            min-height: 60px;
+        }
+
+        /* Summary bar */
+        .summary-bar {
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            gap: 20px;
+        }
+        .summary-item { display: flex; gap: 6px; }
+        .summary-label { font-weight: 500; color: #888; }
+        .summary-value { color: #333; font-weight: 600; }
+
+        /* =====================
+           MODAL STYLES
+           ===================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            padding: 16px 20px;
+            background: #1a1a2e;
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(90vh - 120px);
+        }
+        .modal-footer {
+            padding: 12px 20px;
+            background: #f5f6fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+        }
+        .form-group input:focus { border-color: #00d9ff; }
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        .form-row .form-group { flex: 1; }
+        .form-section-title {
+            font-size: 12px;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 10px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-section-title:first-child { margin-top: 0; }
     </style>
 </head>
 <body>
@@ -227,6 +362,11 @@
                  :class="{ active: currentPage === 'book' }"
                  @click="switchPage('book')">
                 📖 书籍管理
+            </div>
+            <div class="sidebar-item"
+                 :class="{ active: currentPage === 'inbound' }"
+                 @click="switchPage('inbound')">
+                📥 入库管理
             </div>
         </div>
         <div class="sidebar-section">
@@ -321,6 +461,102 @@
             </div>
         </div>
 
+        <!-- =================== INBOUND PAGE =================== -->
+        <div v-if="currentPage === 'inbound'" class="inbound-page">
+            <div class="toolbar">
+                <span class="table-name">📥 入库管理</span>
+                <span class="spinner" v-if="loading">加载中...</span>
+            </div>
+
+            <!-- Search bar (top) -->
+            <div class="search-bar">
+                <div class="search-field">
+                    <label>ISBN</label>
+                    <input v-model="inboundSearch.isbn" placeholder="模糊匹配ISBN" @keyup.enter="searchInbound" />
+                </div>
+                <div class="search-field">
+                    <label>书名</label>
+                    <input v-model="inboundSearch.bookName" placeholder="模糊匹配书名" @keyup.enter="searchInbound" />
+                </div>
+                <div class="search-field">
+                    <label>库位ID</label>
+                    <input v-model.number="inboundSearch.locationId" placeholder="库位ID" type="number" @keyup.enter="searchInbound" />
+                </div>
+                <button class="btn btn-primary" @click="searchInbound">🔍 查询</button>
+                <button class="btn btn-success" @click="showInboundModal">➕ 新建</button>
+            </div>
+
+            <!-- Summary bar -->
+            <div class="summary-bar" v-if="!loading && inboundTotal > 0">
+                <div class="summary-item">
+                    <span class="summary-label">总记录数:</span>
+                    <span class="summary-value">{{ inboundTotal }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">总入库数量:</span>
+                    <span class="summary-value">{{ inboundTotalQty }}</span>
+                </div>
+            </div>
+
+            <!-- Middle: Table -->
+            <div class="inbound-middle">
+                <div class="table-container" style="padding-top: 12px;">
+                    <div v-if="loading" class="empty">
+                        <div class="empty-icon">⏳</div>
+                        <div>加载中...</div>
+                    </div>
+                    <div v-else-if="inboundRows.length === 0" class="empty">
+                        <div class="empty-icon">📭</div>
+                        <div>没有找到入库记录</div>
+                    </div>
+                    <div v-else class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th v-for="col in inboundColumns" :key="col"
+                                        :class="{ sorted: inboundSortCol === col }"
+                                        @click="inboundSort(col)">
+                                        {{ col }}
+                                        <span class="sort-icon" v-if="inboundSortCol === col">
+                                            {{ inboundSortDir === 'asc' ? '↑' : '↓' }}
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(row, ri) in inboundRows" :key="ri">
+                                    <td v-for="col in inboundColumns" :key="col" :title="row[col]">
+                                        {{ row[col] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" v-if="!loading">
+                <span class="pagination-info">共 {{ inboundTotal }} 条 | 第 {{ inboundPage + 1 }} / {{ inboundTotalPages }} 页 | 每页 {{ inboundSize }} 条</span>
+                <div class="pagination-controls">
+                    <button @click="goInboundPage(0)" :disabled="inboundPage === 0">首页</button>
+                    <button @click="goInboundPage(inboundPage - 1)" :disabled="inboundPage === 0">上一页</button>
+                    <button v-for="p in inboundPageNumbers" :key="p"
+                            class="page-num"
+                            :class="{ active: p === inboundPage }"
+                            @click="goInboundPage(p)">{{ p + 1 }}</button>
+                    <button @click="goInboundPage(inboundPage + 1)" :disabled="inboundPage >= inboundTotalPages - 1">下一页</button>
+                    <button @click="goInboundPage(inboundTotalPages - 1)" :disabled="inboundPage >= inboundTotalPages - 1">末页</button>
+                </div>
+            </div>
+
+            <!-- Bottom: Notes area (留空) -->
+            <div class="inbound-bottom">
+                <span>备注：</span>
+                <span style="color: #ccc;">（暂无）</span>
+            </div>
+        </div>
+
         <!-- =================== TABLE VIEWER PAGE =================== -->
         <div v-if="currentPage === 'table'">
             <div class="toolbar">
@@ -375,6 +611,68 @@
             </div>
         </div>
     </div>
+
+    <!-- =================== INBOUND MODAL =================== -->
+    <div class="modal-overlay" v-if="inboundModalVisible" @click.self="closeInboundModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span>📥 新增进库记录</span>
+                <button class="close-btn" @click="closeInboundModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section-title">📖 书籍信息</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ISBN *</label>
+                        <input v-model="inboundForm.isbn" placeholder="如: 978-7-111-54742-1" />
+                    </div>
+                    <div class="form-group">
+                        <label>书名 *</label>
+                        <input v-model="inboundForm.name" placeholder="书名" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>出版社</label>
+                    <input v-model="inboundForm.publisher" placeholder="出版社名称" />
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <input v-model="inboundForm.description" placeholder="书籍描述" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>出版日期</label>
+                        <input v-model="inboundForm.publishedDate" type="date" />
+                    </div>
+                </div>
+
+                <div class="form-section-title">📥 入库信息</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>库位ID *</label>
+                        <input v-model.number="inboundForm.locationId" type="number" placeholder="库位ID" />
+                    </div>
+                    <div class="form-group">
+                        <label>数量 *</label>
+                        <input v-model.number="inboundForm.qty" type="number" placeholder="入库数量" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>收货日期</label>
+                        <input v-model="inboundForm.receivedDate" type="date" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" @click="closeInboundModal">取消</button>
+                <button class="btn btn-success" @click="submitInbound" :disabled="inboundSubmitting">
+                    <span v-if="inboundSubmitting">保存中...</span>
+                    <span v-else>💾 保存</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -383,7 +681,7 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            // Page state: 'book' or 'table'
+            // Page state: 'book', 'inbound', or 'table'
             currentPage: 'book',
             tables: [],
 
@@ -411,6 +709,33 @@ createApp({
                 isbn: '',
                 name: '',
                 description: ''
+            },
+
+            // ---- Inbound page ----
+            inboundColumns: ['id', 'isbn', 'name', 'publisher', 'locationId', 'qty', 'receivedDate', 'putawayDate'],
+            inboundRows: [],
+            inboundTotal: 0,
+            inboundTotalQty: 0,
+            inboundPage: 0,
+            inboundSize: 10,
+            inboundSortCol: 'id',
+            inboundSortDir: 'desc',
+            inboundSearch: {
+                isbn: '',
+                bookName: '',
+                locationId: null
+            },
+            inboundModalVisible: false,
+            inboundSubmitting: false,
+            inboundForm: {
+                isbn: '',
+                name: '',
+                publisher: '',
+                description: '',
+                publishedDate: '',
+                locationId: null,
+                qty: null,
+                receivedDate: ''
             }
         };
     },
@@ -427,6 +752,19 @@ createApp({
                 pages.push(i);
             }
             return pages;
+        },
+        inboundTotalPages() {
+            return Math.ceil(this.inboundTotal / this.inboundSize) || 1;
+        },
+        inboundPageNumbers() {
+            const total = this.inboundTotalPages;
+            const cur = this.inboundPage;
+            const pages = [];
+            const delta = 2;
+            for (let i = Math.max(0, cur - delta); i <= Math.min(total - 1, cur + delta); i++) {
+                pages.push(i);
+            }
+            return pages;
         }
     },
     async mounted() {
@@ -437,6 +775,11 @@ createApp({
         // ---- Page navigation ----
         switchPage(page) {
             this.currentPage = page;
+            if (page === 'book') {
+                this.searchBooks();
+            } else if (page === 'inbound') {
+                this.searchInbound();
+            }
         },
 
         // ---- Table viewer ----
@@ -549,6 +892,153 @@ createApp({
         async goBookPage(p) {
             this.bookPage = p;
             await this.searchBooks();
+        },
+
+        // ---- Inbound page ----
+        async searchInbound() {
+            this.loading = true;
+            try {
+                // If bookName is provided, first search books to get matching isbns
+                let isbns = null;
+                if (this.inboundSearch.bookName && this.inboundSearch.bookName.trim()) {
+                    const bookRes = await fetch(`/api/books/search?name=${encodeURIComponent(this.inboundSearch.bookName)}&page=0&size=100`);
+                    const bookData = await bookRes.json();
+                    if (bookData.content && bookData.content.length > 0) {
+                        isbns = bookData.content.map(b => b.isbn);
+                    }
+                }
+
+                // Build params for inbound search
+                const params = new URLSearchParams({
+                    isbn: this.inboundSearch.isbn || '',
+                    page: this.inboundPage,
+                    size: this.inboundSize,
+                    sort: this.inboundSortCol,
+                    direction: this.inboundSortDir
+                });
+                if (this.inboundSearch.locationId) {
+                    params.set('locationId', this.inboundSearch.locationId);
+                }
+
+                const res = await fetch(`/api/inbounds/search/page?${params}`);
+                let data = await res.json();
+
+                // Filter by book names if needed
+                let rows = data.content || [];
+                if (isbns) {
+                    rows = rows.filter(r => isbns.includes(r.isbn));
+                }
+
+                // Enrich with book info (name, publisher)
+                const enrichedRows = await Promise.all(rows.map(async (row) => {
+                    try {
+                        const bookRes = await fetch(`/api/books/${row.isbn}`);
+                        if (bookRes.ok) {
+                            const book = await bookRes.json();
+                            return {
+                                ...row,
+                                name: book.name || '-',
+                                publisher: book.publisher || '-'
+                            };
+                        }
+                    } catch (e) {}
+                    return { ...row, name: '-', publisher: '-' };
+                }));
+
+                this.inboundRows = enrichedRows;
+                this.inboundTotal = data.totalElements || enrichedRows.length;
+                this.inboundTotalQty = enrichedRows.reduce((sum, r) => sum + (r.qty || 0), 0);
+            } catch (e) {
+                console.error('Search inbound error:', e);
+                this.inboundRows = [];
+                this.inboundTotal = 0;
+                this.inboundTotalQty = 0;
+            } finally {
+                this.loading = false;
+            }
+        },
+        async inboundSort(col) {
+            if (this.inboundSortCol === col) {
+                this.inboundSortDir = this.inboundSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.inboundSortCol = col;
+                this.inboundSortDir = 'asc';
+            }
+            await this.searchInbound();
+        },
+        async goInboundPage(p) {
+            this.inboundPage = p;
+            await this.searchInbound();
+        },
+        showInboundModal() {
+            this.inboundForm = {
+                isbn: '',
+                name: '',
+                publisher: '',
+                description: '',
+                publishedDate: '',
+                locationId: null,
+                qty: null,
+                receivedDate: ''
+            };
+            this.inboundModalVisible = true;
+        },
+        closeInboundModal() {
+            this.inboundModalVisible = false;
+        },
+        async submitInbound() {
+            // Validate required fields
+            if (!this.inboundForm.isbn || !this.inboundForm.name || !this.inboundForm.locationId || !this.inboundForm.qty) {
+                alert('请填写必填字段：ISBN、书名、库位ID、数量');
+                return;
+            }
+
+            this.inboundSubmitting = true;
+            try {
+                // 1. Create or update Book record
+                const bookDTO = {
+                    isbn: this.inboundForm.isbn,
+                    name: this.inboundForm.name,
+                    publisher: this.inboundForm.publisher || null,
+                    description: this.inboundForm.description || null,
+                    publishedDate: this.inboundForm.publishedDate || null
+                };
+                const bookRes = await fetch('/api/books', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookDTO)
+                });
+                if (!bookRes.ok) {
+                    throw new Error('创建书籍记录失败');
+                }
+
+                // 2. Create Inbound record
+                const inboundDTO = {
+                    isbn: this.inboundForm.isbn,
+                    userId: 1, // TODO: get from current user
+                    locationId: this.inboundForm.locationId,
+                    qty: this.inboundForm.qty,
+                    receivedDate: this.inboundForm.receivedDate || null,
+                    putawayDate: new Date().toISOString()
+                };
+                const inboundRes = await fetch('/api/inbounds', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(inboundDTO)
+                });
+                if (!inboundRes.ok) {
+                    throw new Error('创建入库记录失败');
+                }
+
+                // Success - close modal and refresh
+                this.closeInboundModal();
+                this.inboundPage = 0;
+                await this.searchInbound();
+            } catch (e) {
+                alert('保存失败: ' + e.message);
+            } finally {
+                this.inboundSubmitting = false;
+            }
         }
     }
 }).mount('#app');

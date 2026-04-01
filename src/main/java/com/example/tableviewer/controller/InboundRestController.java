@@ -44,6 +44,20 @@ public class InboundRestController {
         return ResponseEntity.ok(service.findByIsbn(isbn));
     }
 
+    // GET /api/inbounds/search/page?isbn=&locationId=&page=0&size=10
+    @GetMapping("/search/page")
+    public ResponseEntity<Page<InboundResponseDTO>> searchPage(
+            @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) Long locationId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Sort.Direction dir = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        return ResponseEntity.ok(service.search(isbn, locationId, org.springframework.data.domain.PageRequest.of(page, size, Sort.by(dir, sort))));
+    }
+
     @PostMapping
     public ResponseEntity<InboundResponseDTO> create(@RequestBody InboundRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
