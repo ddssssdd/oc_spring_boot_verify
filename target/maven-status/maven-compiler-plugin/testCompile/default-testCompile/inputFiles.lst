@@ -1,6 +1,8 @@
 /home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/controller/BookRestControllerTest.java
+/home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/controller/InboundRestControllerTest.java
 /home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/controller/ReaderRestControllerTest.java
 /home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/controller/UserRestControllerTest.java
 /home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/service/BookServiceTest.java
+/home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/service/InboundServiceTest.java
 /home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/service/ReaderServiceTest.java
 /home/sfu/.openclaw/workspace/table-viewer/src/test/java/com/example/tableviewer/service/UserServiceTest.java

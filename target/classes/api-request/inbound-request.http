@@ -1,0 +1,40 @@
+### 基础路径
+@baseUrl = http://localhost:8080/api/inbounds
+
+### 查询所有（分页）
+GET {{baseUrl}}?page=0&size=10&sort=id&direction=asc
+
+### 按 ID 查询
+GET {{baseUrl}}/1
+
+### 按 ISBN 查找
+GET {{baseUrl}}/search?isbn=978-7-111-54742-1
+
+### 新增
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "isbn": "978-7-111-54742-1",
+  "userId": 1,
+  "locationId": 1,
+  "qty": 100,
+  "receivedDate": "2024-01-15",
+  "putawayDate": "2024-01-16T10:30:00"
+}
+
+### 更新
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "isbn": "978-7-111-54742-1",
+  "userId": 1,
+  "locationId": 2,
+  "qty": 150,
+  "receivedDate": "2024-01-15",
+  "putawayDate": "2024-01-16T14:00:00"
+}
+
+### 删除
+DELETE {{baseUrl}}/1
