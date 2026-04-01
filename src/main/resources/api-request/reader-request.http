@@ -1,0 +1,38 @@
+### 基础路径
+@baseUrl = http://localhost:8080/api/readers
+
+### 查询所有（分页）
+GET {{baseUrl}}?page=0&size=10&sort=id&direction=asc
+
+### 按 ID 查询
+GET {{baseUrl}}/1
+
+### 按姓名模糊查找
+GET {{baseUrl}}/search?name=张三
+
+### 新增
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "name": "新读者",
+  "gender": "女",
+  "birthday": "1992-03-10",
+  "registeredDate": "2024-01-15",
+  "activeFlag": true,
+  "status": "ACTIVE"
+}
+
+### 更新
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "name": "更新后姓名",
+  "gender": "女",
+  "activeFlag": true,
+  "status": "ACTIVE"
+}
+
+### 删除
+DELETE {{baseUrl}}/1

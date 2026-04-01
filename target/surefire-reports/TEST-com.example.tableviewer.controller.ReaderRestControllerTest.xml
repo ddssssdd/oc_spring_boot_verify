@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.controller.UserRestControllerTest" time="0.075" tests="8" errors="0" skipped="0" failures="0" flakes="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.controller.ReaderRestControllerTest" time="1.24" tests="8" errors="0" skipped="0" failures="0" flakes="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -62,52 +62,40 @@
     <property name="java.class.version" value="69.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[table-viewer] "/>
   </properties>
-  <testcase name="update_whenExists_shouldReturn200" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.033">
-    <system-out><![CDATA[2026-04-01T09:42:08.225+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.225+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.225+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+  <testcase name="delete_shouldReturn204WhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.053">
+    <system-out><![CDATA[09:42:06.846 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.tableviewer.controller.ReaderRestControllerTest]: ReaderRestControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+09:42:06.938 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.tableviewer.TableViewerApplication for test class com.example.tableviewer.controller.ReaderRestControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.13)
+
+2026-04-01T09:42:07.203+08:00  INFO 121947 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Starting ReaderRestControllerTest using Java 25.0.2 with PID 121947 (started by sfu in /home/sfu/.openclaw/workspace/table-viewer)
+2026-04-01T09:42:07.204+08:00 DEBUG 121947 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Running with Spring Boot v3.5.13, Spring v6.2.17
+2026-04-01T09:42:07.205+08:00  INFO 121947 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T09:42:07.647+08:00  INFO 121947 --- [table-viewer] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-04-01T09:42:07.847+08:00  INFO 121947 --- [table-viewer] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-01T09:42:07.848+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-01T09:42:07.849+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-04-01T09:42:07.864+08:00  INFO 121947 --- [table-viewer] [           main] c.e.t.c.ReaderRestControllerTest         : Started ReaderRestControllerTest in 0.893 seconds (process running for 2.267)
 ]]></system-out>
   </testcase>
-  <testcase name="update_whenNotExists_shouldReturn404" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.006">
-    <system-out><![CDATA[2026-04-01T09:42:08.234+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.234+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.234+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="findAll_shouldReturnPagedUsers" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.008">
-    <system-out><![CDATA[2026-04-01T09:42:08.240+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.240+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.240+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="delete_whenExists_shouldReturn204" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.004">
-    <system-out><![CDATA[2026-04-01T09:42:08.248+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.248+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.248+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="create_shouldReturn201" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.006">
-    <system-out><![CDATA[2026-04-01T09:42:08.252+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.253+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.253+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="findById_whenExists_shouldReturnUser" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.005">
-    <system-out><![CDATA[2026-04-01T09:42:08.259+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.259+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.259+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="findById_whenNotExists_shouldReturn404" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.006">
-    <system-out><![CDATA[2026-04-01T09:42:08.265+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.265+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.265+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="delete_whenNotExists_shouldReturn404" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.004">
-    <system-out><![CDATA[2026-04-01T09:42:08.270+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.270+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.270+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+  <testcase name="update_shouldReturnUpdatedReaderWhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.035"/>
+  <testcase name="findByName_shouldReturnMatchingReaders" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.026"/>
+  <testcase name="create_shouldReturnCreatedReader" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.012"/>
+  <testcase name="findById_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.003"/>
+  <testcase name="findById_shouldReturnReaderWhenExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.003"/>
+  <testcase name="delete_shouldReturn404WhenNotExists" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.003"/>
+  <testcase name="findAll_shouldReturnEmptyPage" classname="com.example.tableviewer.controller.ReaderRestControllerTest" time="0.009">
+    <system-out><![CDATA[2026-04-01T09:42:08.019+08:00  WARN 121947 --- [table-viewer] [           main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
 ]]></system-out>
   </testcase>
 </testsuite>

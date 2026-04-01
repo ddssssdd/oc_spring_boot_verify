@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.controller.UserRestControllerTest" time="0.075" tests="8" errors="0" skipped="0" failures="0" flakes="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.tableviewer.service.ReaderServiceTest" time="0.636" tests="9" errors="0" skipped="0" failures="0" flakes="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -8,10 +8,8 @@
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="https://ubuntu.com/"/>
     <property name="user.timezone" value="Asia/Shanghai"/>
-    <property name="org.jboss.logging.provider" value="slf4j"/>
     <property name="os.name" value="Linux"/>
     <property name="java.vm.specification.version" value="25"/>
-    <property name="APPLICATION_NAME" value="table-viewer"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-25-openjdk-amd64/lib"/>
@@ -30,8 +28,6 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
-    <property name="java.awt.headless" value="true"/>
     <property name="surefire.real.class.path" value="/home/sfu/.openclaw/workspace/table-viewer/target/surefire/surefirebooter-20260401094205553_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.2+10-Ubuntu-124.04"/>
@@ -49,8 +45,6 @@
     <property name="user.dir" value="/home/sfu/.openclaw/workspace/table-viewer"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="PID" value="121947"/>
-    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
     <property name="native.encoding" value="UTF-8"/>
     <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
@@ -60,54 +54,21 @@
     <property name="stdin.encoding" value="UTF-8"/>
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
-    <property name="LOGGED_APPLICATION_NAME" value="[table-viewer] "/>
   </properties>
-  <testcase name="update_whenExists_shouldReturn200" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.033">
-    <system-out><![CDATA[2026-04-01T09:42:08.225+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.225+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.225+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
+  <testcase name="findById_shouldReturnEmptyWhenNotExists" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.589">
+    <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/sfu/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
   </testcase>
-  <testcase name="update_whenNotExists_shouldReturn404" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.006">
-    <system-out><![CDATA[2026-04-01T09:42:08.234+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.234+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.234+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="findAll_shouldReturnPagedUsers" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.008">
-    <system-out><![CDATA[2026-04-01T09:42:08.240+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.240+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.240+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="delete_whenExists_shouldReturn204" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.004">
-    <system-out><![CDATA[2026-04-01T09:42:08.248+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.248+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.248+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="create_shouldReturn201" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.006">
-    <system-out><![CDATA[2026-04-01T09:42:08.252+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.253+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.253+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="findById_whenExists_shouldReturnUser" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.005">
-    <system-out><![CDATA[2026-04-01T09:42:08.259+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.259+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.259+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="findById_whenNotExists_shouldReturn404" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.006">
-    <system-out><![CDATA[2026-04-01T09:42:08.265+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.265+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.265+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
-  <testcase name="delete_whenNotExists_shouldReturn404" classname="com.example.tableviewer.controller.UserRestControllerTest" time="0.004">
-    <system-out><![CDATA[2026-04-01T09:42:08.270+08:00  INFO 121947 --- [table-viewer] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
-2026-04-01T09:42:08.270+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-01T09:42:08.270+08:00  INFO 121947 --- [table-viewer] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-]]></system-out>
-  </testcase>
+  <testcase name="delete_shouldReturnTrueWhenExists" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.004"/>
+  <testcase name="update_shouldUpdateAndReturnReaderWhenExists" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.004"/>
+  <testcase name="findAll_shouldReturnPageOfReaders" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.005"/>
+  <testcase name="update_shouldReturnEmptyWhenNotExists" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.002"/>
+  <testcase name="create_shouldSaveAndReturnReader" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.002"/>
+  <testcase name="findByName_shouldReturnMatchingReaders" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.002"/>
+  <testcase name="findById_shouldReturnReaderWhenExists" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.001"/>
+  <testcase name="delete_shouldReturnFalseWhenNotExists" classname="com.example.tableviewer.service.ReaderServiceTest" time="0.001"/>
 </testsuite>
