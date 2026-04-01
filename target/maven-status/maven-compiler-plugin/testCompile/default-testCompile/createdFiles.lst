@@ -9,6 +9,7 @@ com/example/tableviewer/service/BookServiceTest.class
 com/example/tableviewer/service/InboundServiceTest.class
 com/example/tableviewer/controller/ReaderRestControllerTest.class
 com/example/tableviewer/controller/InboundRestControllerTest.class
+com/example/tableviewer/integration/BookFlowIntegrationTest.class
 com/example/tableviewer/controller/BorrowRestControllerTest.class
 com/example/tableviewer/service/ReaderServiceTest.class
 com/example/tableviewer/service/InventoryServiceTest.class

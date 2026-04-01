@@ -13,7 +13,8 @@ import java.util.List;
 @Repository
 public interface BorrowRepository extends JpaRepository<Borrow, BorrowId> {
 
-    List<Borrow> findByIsbn(String isbn);
+    @Query("SELECT b FROM Borrow b WHERE b.id.isbn LIKE %:isbn%")
+    List<Borrow> findByIsbn(@Param("isbn") String isbn);
 
     @Query("SELECT b FROM Borrow b WHERE " +
            "(:isbn IS NULL OR :isbn = '' OR b.id.isbn LIKE %:isbn%) AND " +
