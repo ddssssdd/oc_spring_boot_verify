@@ -37,7 +37,7 @@ public class InventoryService {
 
     @Transactional(readOnly = true)
     public List<InventoryResponseDTO> findByIsbn(String isbn) {
-        return repository.findByIsbn(isbn)
+        return repository.findById_Isbn(isbn)
                 .stream()
                 .map(InventoryMapper::toDTO)
                 .collect(Collectors.toList());

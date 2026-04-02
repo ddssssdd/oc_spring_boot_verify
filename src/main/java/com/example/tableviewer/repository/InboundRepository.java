@@ -15,7 +15,7 @@ public interface InboundRepository extends JpaRepository<Inbound, Long> {
     List<Inbound> findByIsbn(String isbn);
 
     @Query("SELECT i FROM Inbound i WHERE " +
-           "(:isbn IS NULL OR :isbn = '' OR i.id.isbn LIKE %:isbn%) AND " +
-           "(:locationId IS NULL OR i.id.locationId = :locationId)")
+           "(:isbn IS NULL OR :isbn = '' OR i.isbn LIKE %:isbn%) AND " +
+           "(:locationId IS NULL OR i.locationId = :locationId)")
     Page<Inbound> search(@Param("isbn") String isbn, @Param("locationId") Long locationId, Pageable pageable);
 }

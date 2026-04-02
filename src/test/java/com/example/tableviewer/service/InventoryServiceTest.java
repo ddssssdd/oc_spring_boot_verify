@@ -76,7 +76,7 @@ class InventoryServiceTest {
         Inventory inv2 = new Inventory();
         inv2.setId(new InventoryId("978-7-111-54742-1", 2L));
         inv2.setQty(50);
-        when(repository.findByIsbn("978-7-111-54742-1")).thenReturn(Arrays.asList(inv1, inv2));
+        when(repository.findById_Isbn("978-7-111-54742-1")).thenReturn(Arrays.asList(inv1, inv2));
 
         List<InventoryResponseDTO> result = service.findByIsbn("978-7-111-54742-1");
 

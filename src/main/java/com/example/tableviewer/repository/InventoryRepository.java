@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, InventoryId> {
 
-    List<Inventory> findByIsbn(String isbn);
+    List<Inventory> findById_Isbn(String isbn);
 }
