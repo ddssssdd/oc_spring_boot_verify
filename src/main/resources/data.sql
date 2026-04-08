@@ -32,10 +32,86 @@ CREATE TABLE t_book (
     description VARCHAR(1000),
     published_date DATE,
     price DECIMAL(10, 2),
-    inventory_qty INTEGER
+    inventory_qty INTEGER,
+    publisher VARCHAR(200),
+    cover_image_url VARCHAR(500),
+    comments VARCHAR(2000)
 );
 
 INSERT INTO t_book (isbn, name, author, description, published_date, price, inventory_qty) VALUES
 ('978-7-111-12345-6', 'Java编程思想', 'Bruce Eckel', 'Java经典书籍', '2007-03-01', 108.00, 50),
 ('978-7-115-98765-4', 'Python Crash Course', 'Eric Matthes', 'Python入门经典', '2019-05-15', 89.00, 30),
 ('978-5-13-456789-0', '算法导论', 'Thomas H. Cormen', '算法领域经典教材', '2012-07-26', 128.50, 20);
+
+-- =============================================
+-- t_inbound table
+-- =============================================
+CREATE TABLE IF NOT EXISTS t_inbound (
+    id BIGSERIAL PRIMARY KEY,
+    isbn VARCHAR(20) NOT NULL,
+    user_id BIGINT NOT NULL,
+    location_id BIGINT,
+    qty INTEGER NOT NULL,
+    received_date DATE,
+    putaway_date DATE
+);
+
+-- =============================================
+-- t_borrow table
+-- =============================================
+CREATE TABLE IF NOT EXISTS t_borrow (
+    isbn VARCHAR(20) NOT NULL,
+    location_id BIGINT NOT NULL,
+    reader_id BIGINT NOT NULL,
+    user_id BIGINT,
+    borrow_date DATE,
+    due_date DATE,
+    renew_date DATE,
+    status VARCHAR(20),
+    PRIMARY KEY (isbn, location_id, reader_id)
+);
+
+-- =============================================
+-- t_return table
+-- =============================================
+CREATE TABLE IF NOT EXISTS t_return (
+    id BIGSERIAL PRIMARY KEY,
+    isbn VARCHAR(20) NOT NULL,
+    reader_id BIGINT NOT NULL,
+    return_date DATE,
+    location_id BIGINT,
+    user_id BIGINT
+);
+
+-- =============================================
+-- t_reader table
+-- =============================================
+CREATE TABLE IF NOT EXISTS t_reader (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    gender VARCHAR(10),
+    birthday DATE,
+    registered_date DATE,
+    active_flag BOOLEAN,
+    status VARCHAR(20)
+);
+
+-- =============================================
+-- t_inventory table
+-- =============================================
+CREATE TABLE IF NOT EXISTS t_inventory (
+    isbn VARCHAR(20) NOT NULL,
+    location_id BIGINT NOT NULL,
+    qty INTEGER NOT NULL,
+    update_date TIMESTAMP,
+    PRIMARY KEY (isbn, location_id)
+);
+
+-- =============================================
+-- t_role table
+-- =============================================
+CREATE TABLE IF NOT EXISTS t_role (
+    id BIGSERIAL PRIMARY KEY,
+    role_name VARCHAR(100) NOT NULL,
+    description VARCHAR(500)
+);

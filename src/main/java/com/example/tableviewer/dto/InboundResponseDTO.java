@@ -2,7 +2,6 @@ package com.example.tableviewer.dto;
 
 import com.example.tableviewer.model.Inbound;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class InboundResponseDTO {
 
@@ -12,7 +11,7 @@ public class InboundResponseDTO {
     private Long locationId;
     private Integer qty;
     private LocalDate receivedDate;
-    private LocalDateTime putawayDate;
+    private LocalDate putawayDate;
 
     public static InboundResponseDTO from(Inbound inbound) {
         if (inbound == null) return null;
@@ -45,6 +44,6 @@ public class InboundResponseDTO {
     public LocalDate getReceivedDate() { return receivedDate; }
     public void setReceivedDate(LocalDate receivedDate) { this.receivedDate = receivedDate; }
 
-    public LocalDateTime getPutawayDate() { return putawayDate; }
-    public void setPutawayDate(LocalDateTime putawayDate) { this.putawayDate = putawayDate; }
+    public LocalDate getPutawayDate() { return putawayDate; }
+    public void setPutawayDate(LocalDate putawayDate) { this.putawayDate = putawayDate; }
 }

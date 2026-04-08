@@ -2,7 +2,6 @@ package com.example.tableviewer.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_inbound")
@@ -28,7 +27,7 @@ public class Inbound {
     private LocalDate receivedDate;
 
     @Column(name = "putaway_date")
-    private LocalDateTime putawayDate;
+    private LocalDate putawayDate;
 
     public Inbound() {}
 
@@ -50,6 +49,6 @@ public class Inbound {
     public LocalDate getReceivedDate() { return receivedDate; }
     public void setReceivedDate(LocalDate receivedDate) { this.receivedDate = receivedDate; }
 
-    public LocalDateTime getPutawayDate() { return putawayDate; }
-    public void setPutawayDate(LocalDateTime putawayDate) { this.putawayDate = putawayDate; }
+    public LocalDate getPutawayDate() { return putawayDate; }
+    public void setPutawayDate(LocalDate putawayDate) { this.putawayDate = putawayDate; }
 }

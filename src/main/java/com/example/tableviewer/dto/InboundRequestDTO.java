@@ -1,8 +1,8 @@
 package com.example.tableviewer.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class InboundRequestDTO {
 
@@ -21,7 +21,9 @@ public class InboundRequestDTO {
     private Integer qty;
 
     private LocalDate receivedDate;
-    private LocalDateTime putawayDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate putawayDate;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -41,6 +43,6 @@ public class InboundRequestDTO {
     public LocalDate getReceivedDate() { return receivedDate; }
     public void setReceivedDate(LocalDate receivedDate) { this.receivedDate = receivedDate; }
 
-    public LocalDateTime getPutawayDate() { return putawayDate; }
-    public void setPutawayDate(LocalDateTime putawayDate) { this.putawayDate = putawayDate; }
+    public LocalDate getPutawayDate() { return putawayDate; }
+    public void setPutawayDate(LocalDate putawayDate) { this.putawayDate = putawayDate; }
 }
